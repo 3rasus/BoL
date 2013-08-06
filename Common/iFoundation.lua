@@ -204,6 +204,17 @@ function DamageCalculation:LastHitMinion(Spell, spellString)
 	end
 end 
 
+function DamageCalculation:KillSteal(Spell, spellString)
+	for i = 1, heroManager.iCount, 1 do
+		local target = heroManager:getHero(i)
+		if ValidTarget(target, Spell.range) then
+			if target.health <= self:GetDamage(spellString, target) then
+				Spell:Cast(target)
+			end
+		end
+	end
+end 
+
 
 --[[
 	Misc. from iSAC
@@ -376,15 +387,21 @@ local mPercentage = 15
 local PotionSlot = nil
 local tickPotions = 0
 
+-- enemy monitor
+local mePlayer = nil 
+local meLastTick = 0
+
 function Monitor:__init(PluginMenu)
 	lastTick = GetTickCount()
 	mLastTick = GetTickCount()
 	tickPotions = GetTickCount()
 	lastHealth = myHero.health 
+	meLastTick = GetTickCount()
 	self.PluginMenu = PluginMenu 
 	self.PluginMenu:addParam("monitorSpe", "-- Monitor Options --", SCRIPT_PARAM_INFO, "")
 	self.PluginMenu:addParam("mPercentage", "Monitor teamate percentage",SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
 	self.PluginMenu:addParam("healthPercentage", "Rapid Damage Percentage",SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
+	self.PluginMenu:addParam("mePercentage", "Monitor enemy percentage",SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
 end 
 
 function Monitor:TakingRapidDamage()
@@ -405,33 +422,99 @@ function Monitor:GetLowTeamate()
 	return mPlayer 
 end
 
+function Monitor:GetLowEnemy()
+	return mePlayer
+end 
+
 function Monitor:MonitorLowTeamate()
 	if mPlayer == nil then return end 
 	if GetTickCount() - mLastTick > (5 * 1000) then 
 		if mPlayer.health / mPlayer.maxHealth > (self.PluginMenu.mPercentage / 100) then
 			mPlayer = nil
+		end			
+		mLastTick = GetTickCount()
+	end 
+end 
+
+function Monitor:MonitorLowEnemy()
+	if mePlayer == nil then return end 
+	if GetTickCount() - meLastTick > (5 * 1000) then 
+		if mePlayer.health / mePlayer.maxHealth > (self.PluginMenu.mePercentage / 100) then
+			mePlayer = nil
 		end
-	end
+		meLastTick = GetTickCount()
+	end 
 end 
 
 function Monitor:IsAlly(champion)
 	return champion and champion.type == "obj_AI_Hero" and champion.team == myHero.team
 end 
 
+function Monitor:IsEnemy(champion)
+	return champion and champion.type == "obj_AI_Hero" and champion.team ~= myHero.team
+end 
+
 function Monitor:MonitorTeam(range) 
 	for i=1, heroManager.iCount do
 		local champion = heroManager:GetHero(i)
 		if self:IsAlly(champion) and champion.name ~= myHero.name and not champion.dead and GetDistance(champion) <= range then
-			if champion.health / champion.maxHealth < (self.PluginMenu.mPercentage / 100) then
+			if champion.health / champion.maxHealth <= (self.PluginMenu.mPercentage / 100) then
 				mPlayer = champion 
 			end
 		end
 	end
 end 
 
+function Monitor:MonitorEnemies(range) 
+	for i=1, heroManager.iCount do
+		local champion = heroManager:GetHero(i)
+		if self:IsEnemy(champion) and champion.name ~= myHero.name and not champion.dead and GetDistance(champion) <= range then
+			if champion.health / champion.maxHealth <= (self.PluginMenu.mePercentage / 100) then
+				mePlayer = champion 
+			end
+		end
+	end
+end 
+
+function Monitor:GetTeamateWithMostEnemies(range) 
+	local best = nil 
+	local enemies = math.huge
+	for i=1, heroManager.iCount do
+		local champion = heroManager:GetHero(i)
+		if self:IsAlly(champion) and champion.name ~= myHero.name and not champion.dead and GetDistance(champion) <= range then
+			if best == nil then
+				best = champion 
+				enemies = Monitor:CountEnemies(champion, range)
+			elseif Monitor:CountEnemies(champion, range) > enemies then
+				best = champion
+				enemies = Monitor:CountEnemies(champion, range)
+			end
+ 		end
+	end
+	return best 
+end 
+
+function Monitor:CountEnemies(point, range)
+    local ChampCount = 0
+    for j = 1, heroManager.iCount, 1 do
+        local enemyhero = heroManager:getHero(j)
+        if myHero.team ~= enemyhero.team and ValidTarget(enemyhero, rRange + 50) then
+            if GetDistance(enemyhero, point) <= range then
+                ChampCount = ChampCount + 1
+            end
+        end
+    end            
+    return ChampCount
+end
+
 function Monitor:PrintWarnings() 
 	if mPlayer == nil then return end 
 	PrintChat("Player has dropped below threshold health... P: " .. mPlayer.charName)
+end 
+
+function Monitor:PrintNotifications() 
+	if mePlayer == nil then return end 
+	PrintChat("Enemy has dropped below threshold health... P: " .. mePlayer.charName)
 end 
 
 function Monitor:AutoPotion()

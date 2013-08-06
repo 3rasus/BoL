@@ -44,7 +44,7 @@ function PluginOnTick()
 		if SkillR:Ready() then
 			if monitor:GetLowTeamate() ~= nil then
 				SkillR:Cast(monitor:GetLowTeamate())
-			elseif myHero.health < myHero.maxHealth * (PluginMenu.rPercentage / 100) then
+			elseif myHero.health / myHero.maxHealth <= (PluginMenu.rPercentage / 100) then
 				SkillR:Cast(myHero) 
 			end 
 		end 
