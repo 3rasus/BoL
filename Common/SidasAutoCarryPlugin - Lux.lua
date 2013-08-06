@@ -25,6 +25,7 @@ function PluginOnLoad()
 	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
 	PluginMenu:addParam("rCombo", "Use R in Combo", SCRIPT_PARAM_ONOFF, true)
 	PluginMenu:addParam("rKS", "KS with R", SCRIPT_PARAM_ONOFF, true)
+	PluginMenu:addParam("wMonitor", "Monitor W", SCRIPT_PARAM_ONOFF, true)
 	PluginMenu:addParam("wPercentage", "Monitor w percentage",SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
 	monitor = Monitor(PluginMenu)
 end
@@ -48,10 +49,12 @@ function PluginOnTick()
 
 	if Target and MainMenu.AutoCarry then
 
-		if monitor:GetLowTeamate() ~= nil and SkillW:Ready() then
-			SkillW:Cast(monitor:GetLowTeamate())
-		elseif (myHero.health / myHero.maxHealth <= (PluginMenu.wPercentage / 100)) or monitor:TakingRapidDamage() then
-			SkillW:Cast(Target) 
+		if PluginMenu.wMonitor then
+			if monitor:GetLowTeamate() ~= nil and SkillW:Ready() then
+				SkillW:Cast(monitor:GetLowTeamate())
+			elseif SkillW:Ready() and (myHero.health / myHero.maxHealth <= (PluginMenu.wPercentage / 100)) or monitor:TakingRapidDamage() then
+				SkillW:Cast(Target) 
+			end
 		end
 
 		if SkillQ:Ready() then SkillQ:Cast(Target) end 
