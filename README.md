@@ -10,6 +10,7 @@ ToDo
 
 *Not to be done in a specific order* 
 
+-- Currently Have -- 
 - Taric 
 - Urgot
 - Syndra
@@ -19,6 +20,19 @@ ToDo
 - Nunu
 - Veigar
 - Soraka 
+
+*A donation will help me purchase one of these and turn it into an unstoppable combo* 
+-- Need to Buy -- 
+- Shyvana 
+- Hecarim 
+- Elise
+- Irelia 
+- Renekton 
+- Rumble 
+- Xerath 
+- Yorick 
+- Jarvan IV 
+- Malzahar 
 
 
 Want to help me?
