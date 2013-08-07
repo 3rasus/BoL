@@ -22,6 +22,7 @@ ToDo
 - Soraka 
 
 *A donation will help me purchase one of these and turn it into an unstoppable combo* 
+
 -- Need to Buy -- 
 - Shyvana 
 - Hecarim 
