@@ -23,8 +23,8 @@ ToDo
 Want to help me?
 ===
 
-I do not accept PayPal donations, however if you would like a specific champion done and I do not have it, a donation of RP 
-points would be accepted :) 
+I accept donations for contributing to new combos, plugins or champions. If you wish to donate you will receive early access
+to the combo or plugin plus early access to my other combos. 
 
 
 
