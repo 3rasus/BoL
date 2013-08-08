@@ -2,9 +2,9 @@
 1.0 DONE
 --]]
 require "iFoundation"
-local SkillQ = Caster(_Q, 700, SPELL_LINEAR, 2250, 250, 100, true) 
-local SkillW = Caster(_W, 200, SPELL_SELF)
-local SkillE = Caster(_E, 1025, SPELL_LINEAR, 853, 250, 100, true) 
+local SkillQ = Caster(_Q, 700, SPELL_LINEAR, 2250, 0.250, 100, true) 
+local SkillW = Caster(_W, 450, SPELL_SELF)
+local SkillE = Caster(_E, 1025, SPELL_LINEAR, 853, 0.250, 100, true) 
 local SkillR = Caster(_R, 700, SPELL_TARGETED) 
 
 local dmgCalc = DamageCalculation(true, {"Q", "W", "E", "R"}) 
@@ -50,6 +50,7 @@ function PluginOnTick()
 			end 
 			if SkillW:Ready() then SkillW:Cast(Target) end 
 		end 
+		if eClaw == nil and SkillE:Ready() then SkillE:Cast(Target) end 
 		if SkillR:Ready() and dmgCalc:CalculateRealDamage(true, Target) >= Target.health then SkillR:Cast(Target) end 
 		if SkillQ:Ready() then SkillQ:Cast(Target) end 
 		if GetDistance(Target) < SkillW.range and SkillW:Ready() then SkillW:Cast(Target) end 
