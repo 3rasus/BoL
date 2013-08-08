@@ -8,7 +8,7 @@ require "iFoundation"
 
 local SkillQ = Caster(_Q, 550, SPELL_CONE)
 local SkillW = Caster(_W, 250, SPELL_SELF)
-local SkillE = Caster(_E, 1150, SPELL_CIRCLE, 1288, 140, 50, true) 
+local SkillE = Caster(_E, 1150, SPELL_CIRCLE, 1288, 0.140, 50, true) 
 local SkillR = Caster(_R, 0, SPELL_SELF)
 
 local dmgCalc = DamageCalculation(true, {"Q", "W", "E", "R"}) 

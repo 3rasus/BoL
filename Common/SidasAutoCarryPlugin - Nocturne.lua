@@ -5,7 +5,7 @@
 --]]
 
 require "iFoundation"
-local SkillQ = Caster(_Q, 1200, SPELL_LINEAR, 1398, 249, 50, true) 
+local SkillQ = Caster(_Q, 1200, SPELL_LINEAR, 1398, 0.249, 50, true) 
 local SkillW = Caster(_W, math.huge, SPELL_SELF)
 local SkillE = Caster(_E, 425, SPELL_TARGETED)
 -- ignore R... 
