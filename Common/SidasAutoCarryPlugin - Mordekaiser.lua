@@ -1,7 +1,8 @@
 --[[
 
 	SAC Mordekaiser
-
+	
+	Credits to eXtragoZ for pet management 
 --]]
 
 require "iFoundation"
@@ -14,6 +15,9 @@ local dmgCalc = DamageCalculation(true, {"Q", "W", "E", "R"})
 local draw = Draw(dmgCalc) 
 
 local monitor = nil
+
+local rGhost = false
+local rDelay = 0
 
 function PluginOnLoad()
 
@@ -40,6 +44,8 @@ function PluginOnTick()
 		dmgCalc:KillSteal(SkillR, "R")
 	end  
 
+	rGhost = myHero:GetSpellData(_R).name == "mordekaisercotgguide"
+
 	if Target and MainMenu.AutoCarry then	
 		if SkillQ:Ready() then SkillQ:Cast(Target) end 
 		if SkillE:Ready() then SkillE:Cast(Target) end 
@@ -52,9 +58,12 @@ function PluginOnTick()
 			SkillW:Cast(Monitor:GetTeamateWithMostEnemies(750))
 		end 
 
-		if SkillR:Ready() and dmgCalc:CalculateRealDamage(true, Target) > Target.health then 
+		if SkillR:Ready() and rGhost and GetTickCount() >= rDelay then
 			SkillR:Cast(Target) 
-		elseif getDmg("R", Target, myHero) >= Target.health then 
+			rDelay = GetTickCount() + 1000
+		elseif not rGhost and SkillR:Ready() and dmgCalc:CalculateRealDamage(true, Target) > Target.health then 
+			SkillR:Cast(Target) 
+		elseif not rGhost and getDmg("R", Target, myHero) >= Target.health then 
 			SkillR:Cast(Target) 
 		end 
 
