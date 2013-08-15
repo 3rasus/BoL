@@ -1,29 +1,31 @@
 --[[
-1.0 DONE
---]]
-require "iFoundation"
 
-local SkillQ = Caster(_Q, 950, SPELL_LINEAR, 1350, 203, 50, true) 
+	SAC Lulu plugin
+
+	Version 1.0
+	- Initial release
+
+	Version 1.2 
+	- Converted to iFoundation_v2
+
+--]]
+require "iFoundation_v2"
+
+local SkillQ = Caster(_Q, 950, SPELL_LINEAR, 1350, 0.203, 50, true) 
 local SkillW = Caster(_W, 650, SPELL_TARGETED) 
 local SkillE = Caster(_E, 650, SPELL_TARGETED)
 local SkillR = Caster(_R, 900, SPELL_TARGETED)
-
-local dmgCalc = DamageCalculation(true, {"Q", "W", "E"}) 
-local draw = Draw(dmgCalc) 
 
 function PluginOnLoad()
 	AutoCarry.SkillsCrosshair.range = 600
 	MainMenu = AutoCarry.MainMenu
 	PluginMenu = AutoCarry.PluginMenu
 	PluginMenu:addParam("rPercentage", "R Percentage",SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
-	monitor = Monitor(PluginMenu)
-	prioirty = Priority(true)
+	Priority.Instance(true)
+	AutoShield.Instance(SkillE.range, SkillE)
 end 
 
 function PluginOnTick() 
-	monitor:MonitorTeam(700)
-	monitor:MonitorLowTeamate()
-	monitor:AutoPotion()
 
     Target = AutoCarry.GetAttackTarget()
 
@@ -32,18 +34,16 @@ function PluginOnTick()
 		if SkillQ:Ready() then SkillQ:Cast(Target) end 
 
 		if SkillE:Ready() then 
-			if monitor:GetLowTeamate() ~= nil then 
-				SkillE:Cast(monitor:GetLowTeamate()) 
-			elseif monitor:TakingRapidDamage() then
-				SkillE:Cast(myHero)
+			if Monitor.GetLowAlly() ~= nil then 
+				SkillE:Cast(Monitor.GetLowAlly()) 
 			else
 				SkillE:Cast(Target) 
 			end 
 		end 
 
 		if SkillR:Ready() then
-			if monitor:GetLowTeamate() ~= nil then
-				SkillR:Cast(monitor:GetLowTeamate())
+			if Monitor.GetLowAlly() ~= nil then
+				SkillR:Cast(Monitor.GetLowAlly())
 			elseif myHero.health / myHero.maxHealth <= (PluginMenu.rPercentage / 100) then
 				SkillR:Cast(myHero) 
 			end 
@@ -55,12 +55,6 @@ function PluginOnTick()
 	end 
 
 	if MainMenu.LastHit then
-		dmgCalc:LastHitMinion(SkillQ, "Q")
+		Combat.LastHit(SkillQ)
 	end
 end 
-
-function PluginOnDraw()
-	if Target == nil then return false end 
-	draw:DrawTarget(Target)
-end 
-

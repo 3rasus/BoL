@@ -1,16 +1,23 @@
 --[[
-1.0 DONE
+	
+	SAC Lissandra plugin
+
+	Version 1.0
+	- Initial release
+
+	Version 1.1 
+	- Herp-Derp skillshot fixes
+
+	Version 1.2
+	- Converted to iFoundation_v2
+
 --]]
-require "iFoundation"
+require "iFoundation_v2"
+
 local SkillQ = Caster(_Q, 700, SPELL_LINEAR, 2250, 0.250, 100, true) 
 local SkillW = Caster(_W, 450, SPELL_SELF)
 local SkillE = Caster(_E, 1025, SPELL_LINEAR, 853, 0.250, 100, true) 
 local SkillR = Caster(_R, 700, SPELL_TARGETED) 
-
-local dmgCalc = DamageCalculation(true, {"Q", "W", "E", "R"}) 
-local draw = Draw(dmgCalc) 
-
-local monitor = nil
 
 local eClaw = nil 
 local eClawRemoved = nil 
@@ -20,14 +27,9 @@ function PluginOnLoad()
 
 	MainMenu = AutoCarry.MainMenu
 	PluginMenu = AutoCarry.PluginMenu
-	
-	monitor = Monitor(PluginMenu)
 end 
 
 function PluginOnTick()
-	monitor:MonitorTeam(700)
-	monitor:MonitorLowTeamate()
-	monitor:AutoPotion()
 
 	Target = AutoCarry.GetAttackTarget()
 
@@ -38,7 +40,7 @@ function PluginOnTick()
 	-- AutoCarry
 	if Target and MainMenu.AutoCarry then
 
-		if dmgCalc:CalculateRealDamage(true, Target) >= Target.health then
+		if DamageCalculation.CalculateRealDamage(Target) >= Target.health then
 			if SkillE:Ready() then SkillE:Cast(Target) end -- First cast
 			if SkillQ:Ready() then SkillQ:Cast(Target) end 
 			if eClaw ~= nil and eClaw.valid then
@@ -50,21 +52,16 @@ function PluginOnTick()
 			end 
 			if SkillW:Ready() then SkillW:Cast(Target) end 
 		end 
-		if eClaw == nil and SkillE:Ready() then SkillE:Cast(Target) end 
-		if SkillR:Ready() and dmgCalc:CalculateRealDamage(true, Target) >= Target.health then SkillR:Cast(Target) end 
+		if ((eClaw == nil) or eClaw ~= nil and not eClaw.valid) and SkillE:Ready() then SkillE:Cast(Target) end 
+		if SkillR:Ready() and (DamageCalculation.CalculateRealDamage(true, Target) >= Target.health or getDmg("R", Target, myHero) > Target.health) then SkillR:Cast(Target) end 
 		if SkillQ:Ready() then SkillQ:Cast(Target) end 
-		if GetDistance(Target) < SkillW.range and SkillW:Ready() then SkillW:Cast(Target) end 
+		if SkillW:Ready() then SkillW:Cast(Target) end 
 	end  
 
 	-- LastHit
 	if MainMenu.LastHit then
-		dmgCalc:LastHitMinion(SkillE, "E")
+		Combat.LastHit(SkillE)
 	end
-end 
-
-function PluginOnDraw()
-	if Target == nil then return false end 
-	draw:DrawTarget(Target)
 end 
 
 function PluginOnCreateObj(object)

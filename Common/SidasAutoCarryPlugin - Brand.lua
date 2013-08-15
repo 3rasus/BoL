@@ -2,17 +2,18 @@
 	
 	SAC - Brand Edition Ablaze
 
+	Version 1.2 
+	- Updated to iFoundation_v2 
+
+	LAST TESTED 8.12 WORKING PERFECT
 --]]
 
-local SkillQ = {spellKey = _Q, range = 1000, speed = 1603, delay = 187, width = 110}
-local wRange = 900
-local eRange = 625
-local rRange = 750
+require "iFoundation_v2"
 
-local qMana = 50
-local wMana = { 70, 75, 80, 85, 90}
-local eMana = { 70, 75, 80, 85, 90}
-local rMana = 100 
+local SkillQ = Caster(_Q, 1000, SPELL_LINEAR, 1603, 0.187, 110, true)
+local SkillW = Caster(_W, 900, SPELL_CIRCLE, math.huge, 0, 100, true)
+local SkillE = Caster(_E, 625, SPELL_TARGETED)
+local SkillR = Caster(_R, 750, SPELL_TARGETED)
 
 function PluginOnLoad() 
 
@@ -22,19 +23,12 @@ function PluginOnLoad()
 	PluginMenu = AutoCarry.PluginMenu
 
 	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
-	PluginMenu:addParam("ESpread", "Spread Ablaze with E", SCRIPT_PARAM_ONOFF, true)
-	PluginMenu:addParam("QStun", "Stun killable targets with Q", SCRIPT_PARAM_ONOFF, true)
+	PluginMenu:addParam("QStun", "Save Q for stun", SCRIPT_PARAM_ONOFF, true)
 
-	QREADY, WREADY, EREADY, RREADY = false, false, false, false
-
+	Buffs.Instance()
 end
 
 function PluginOnTick()
-	QREADY = (myHero:CanUseSpell(_Q) == READY)
-	WREADY = (myHero:CanUseSpell(_W) == READY)
-	EREADY = (myHero:CanUseSpell(_E) == READY)
-	RREADY = (myHero:CanUseSpell(_R) == READY)
-
 	Target = AutoCarry.GetAttackTarget()
 
 	--> AutoCarry
@@ -43,71 +37,27 @@ function PluginOnTick()
 		--> Ablaze check
 		if IsAblaze(Target) then
 
-			--> Stun killable
-			if QREADY and PluginMenu.QStun and CalculateDamage(Target) > Target.health and GetDistance(Target) <= SkillQ.range then
-				Skillshot(SkillQ, Target)
-			end
+			if PluginMenu.QStun and SkillQ:Ready() then
+				SkillQ:Cast(Target)
+			end 
 
 			--> Spread Ablaze
-			if EREADY and PluginMenu.ESpread and CountEnemyHeroInRange(300, Target) >= 2 and GetDistance(Target) <= eRange then
-				CastSpell(_E, Target)
+			if SkillE:Ready() and Monitor.CountEnemies(Target, 300) >= 2 then
+				SkillE:Cast(Target)
 			end
 
 		end
 
 		--> Regular casting
-		if QREADY and GetDistance(Target) <= SkillQ.range then 
-			Skillshot(SkillQ, Target)
-		end
-
-		if WREADY and GetDistance(Target) <= wRange then
-			CastSpell(_W, Target.x, Target.z)
-		end
-
-		if EREADY and GetDistance(Target) <= eRange then 
-			CastSpell(_E, Target)
-		end
-
-		if RREADY and Target.health < getDmg("R", myHero, Target) and GetDistance(Target) <= rRange then 
-			CastSpell(_R, Target)
+		if SkillQ:Ready() and not PluginMenu.QStun then SkillQ:Cast(Target) end 
+		if SkillW:Ready() then SkillW:Cast(Target) end 
+		if SkillE:Ready() then SkillE:Cast(Target) end 
+		if SkillR:Ready() and (DamageCalculation.CalculateRealDamage(Target) > Target.health or getDmg("R", Target, myHero) > Target.health) then
+			SkillR:Cast(Target) 
 		end 
-
 	end
-end
-
-function PluginOnDraw() 
-	if Target then
-		DrawCircle(Target.x, Target.y, Target.z, 65, 0x00FF00)
-		local text = ""
-		if Target.health <= CalculateDamage(Target) then
-			text = "Killable"
-		else
-			text = "Wait for Cooldowns"
-		end
-		PrintFloatText(Target, 0, text)
-	end
-end
-function CalculateDamage(enemy)
-	local totalDamage = 0
-	local currentMana = myHero.mana 
-	local qReady = QREADY and currentMana >= qMana
-	local wReady = WREADY and currentMana >= wMana[myHero:GetSpellData(_W).level]
-	local eReady = EREADY and currentMana >= eMana[myHero:GetSpellData(_E).level]
-	local rReady = RREADY and currentMana >= rMana 
-	if qReady then totalDamage = totalDamage + getDmg("Q", enemy, myHero) end
-	if wReady then totalDamage = totalDamage + getDmg("W", enemy, myHero) end
-	if eReady then totalDamage = totalDamage + getDmg("E", enemy, myHero) end
-	if rReady then totalDamage = totalDamage + getDmg("R", enemy, myHero) end
-	return totalDamage 
-
-end 
-
-function Skillshot(spell, target) 
-    if not AutoCarry.GetCollision(spell, myHero, target) then
-        AutoCarry.CastSkillshot(spell, target)
-    end
 end
 
 function IsAblaze(target)
-	return TargetHaveBuff("Ablaze", target)
+	return Buffs.TargetHaveBuff("brandablaze", target)
 end

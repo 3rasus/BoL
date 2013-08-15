@@ -1,21 +1,20 @@
+require "iFoundation_v2"
 --[[
 	SAC Anivia plugin
 
-	Version: 1.01 
+	Version: 1.1 
 	- Initial release
+
+	Version: 1.2 
+	- Updated to iFoundation
+
+	LAST TESTED 1.2 ON 8.11 WORKING PERFECT
 --]]
 
-local SkillQ = {spellKey = _Q, range = 1100, speed = 860.05, delay = 250, width = 110}
-local wRange = 1000
-local eRange = 700
-local rRange = 615
-
-local lastMana = 0
-
-local qMana = {80, 100, 120, 140, 160}
-local wMana = {70, 90, 110, 130, 150}
-local eMana = {50, 60, 70, 80, 90}
-local rMana = 75
+local SkillQ = Caster(_Q, 1100, SPELL_LINEAR, 860.05, 0.250, 110, true)
+local SkillW = Caster(_W, 1000, SPELL_CIRCLE, math.huge, 0, 200, true) 
+local SkillE = Caster(_E, 700, SPELL_TARGETED)
+local SkillR = Caster(_R, 615, SPELL_CIRCLE, math.huge, 0, 200, true)
 
 local GlacialStorm = false
 
@@ -25,20 +24,15 @@ function PluginOnLoad()
 	AutoCarry.SkillsCrosshair.range = 1100
 	PluginMenu = AutoCarry.PluginMenu
 	MainMenu = AutoCarry.MainMenu
-	QREADY, WREADY, EREADY, RREADY = false, false, false, false
 	lastMana = myHero.mana
 
 	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
 	PluginMenu:addParam("MaxPercentage", "Max percentage of mana for Ult",SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
-
+	PluginMenu:addParam("wallCombo", "", SCRIPT_PARAM_ONOFF, true)
+	Buffs.Instance()
 end 
 
 function PluginOnTick()
-	RREADY = (myHero:CanUseSpell(_R) == READY)
-	QREADY = (myHero:CanUseSpell(_Q) == READY)
-	WREADY = (myHero:CanUseSpell(_W) == READY)
-	EREADY = (myHero:CanUseSpell(_E) == READY)
-
 	Target = AutoCarry.GetAttackTarget()	
 
 	if GlacialStorm then
@@ -53,22 +47,21 @@ function PluginOnTick()
 
 	-- AutoCarry
 	if Target and MainMenu.AutoCarry then 
-
-		if WREADY and CalculateDamage(Target) >= Target.health and GetDistance(Target) <= wRange then
-			PlaceWall()
+		
+		if SkillW:Ready() and (DamageCalculation.CalculateRealDamage(Target) >= Target.health or PluginMenu.wallCombo) then
+			PlaceWall(Target)
 		end
 
-
-		if QREADY and qObject == nil and GetDistance(Target) <= SkillQ.range then
-			AutoCarry.CastSkillshot(SkillQ, Target)
+		if SkillQ:Ready() and qObject == nil then
+			SkillQ:Cast(Target)
 		end
 
-		if EREADY and IsChilled(Target) and GetDistance(Target) <= eRange then
-			CastSpell(_E, Target)
+		if SkillE:Ready() and IsChilled(Target) then
+			SkillE:Cast(Target)
 		end
 
-		if RREADY and not GlacialStorm and myHero.mana > 200 and GetDistance(Target) <= rRange then
-			CastSpell(_R, Target.x, Target.z)
+		if SkillR:Ready() and not GlacialStorm and myHero.mana > 200 then
+			SkillR:Cast(Target)
 		end
 	end
 
@@ -92,39 +85,13 @@ function PluginOnDeleteObj(obj)
  	end
 end
 
-function PluginOnDraw() 
-	if Target then
-		DrawCircle(Target.x, Target.y, Target.z, 65, 0x00FF00)
-		local text = ""
-		if Target.health <= CalculateDamage(Target) then
-			text = "Killable"
-		else
-			text = "Wait for Cooldowns"
-		end
-		PrintFloatText(Target, 0, text)
-	end
-end
 function IsChilled(enemy)
-	return TargetHaveBuff("Chilled", enemy) 
+	return Buffs.TargetHaveBuff("chilled", enemy)
 end
 
-function CalculateDamage(enemy) 
-	local totalDamage = 0
-	local currentMana = myHero.mana 
-	local qReady = QREADY and currentMana >= qMana[myHero:GetSpellData(_Q).level]
-	local wReady = WREADY and currentMana >= wMana[myHero:GetSpellData(_W).level]
-	local eReady = EREADY and currentMana >= eMana[myHero:GetSpellData(_E).level]
-	local rReady = RREADY and currentMana >= rMana 
-	if qReady then totalDamage = totalDamage + getDmg("Q", enemy, myHero) end
-	if wReady then totalDamage = totalDamage + getDmg("W", enemy, myHero) end
-	if eReady then totalDamage = totalDamage + getDmg("E", enemy, myHero) end
-	if rReady then totalDamage = totalDamage + getDmg("R", enemy, myHero) end
-	return totalDamage
-
-end
 
 function PlaceWall(enemy) 
-	if WREADY and GetDistance(enemy) <= wRange then
+	if SkillW:Ready() and GetDistance(enemy) <= SkillW.range then
 		local TargetPosition = Vector(enemy.x, enemy.y, enemy.z)
 		local MyPosition = Vector(myHero.x, myHero.y, myHero.z)		
 		local WallPosition = TargetPosition + (TargetPosition - MyPosition)*((150/GetDistance(enemy)))
@@ -140,7 +107,7 @@ function MonitorUltimate()
 end
 
 function DisableUltimate()
-	if RREADY and GlacialStorm then
+	if SkillR:Ready() and GlacialStorm then
 		CastSpell(_R)
 	end
 end

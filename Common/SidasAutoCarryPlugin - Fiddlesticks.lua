@@ -1,18 +1,21 @@
 --[[
 	SAC Fiddlesticks plugin
+
+	Version 1.0
+	- Initial release
+
+	Version 1.2 
+	- Converted to iFoundation_v2 
+
 --]]
 
 require "AoE_Skillshot_Position"
+require "iFoundation_v2"
 
-local qRange = 575
-local wRange = 475
-local eRange = 750
-local rRange = 800
-
-local qMana = {65, 75, 85, 95, 105}
-local wMana = {80, 90, 100, 110, 120}
-local eMana = {50, 70, 90, 110, 130}
-local rMana = {150, 200, 250}
+local SkillQ = Caster(_Q, 575, SPELL_TARGETED)
+local SkillW = Caster(_W, 475, SPELL_TARGETED)
+local SkillE = Caster(_E, 750, SPELL_TARGETED)
+local SkillR = Caster(_R, 800, SPELL_SELF)
 
 local wTick = 0
 local wCast = false
@@ -26,82 +29,31 @@ function PluginOnLoad()
 	PluginMenu = AutoCarry.PluginMenu
 
 	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
-	PluginMenu:addParam("RMec", "Use MEC for R", SCRIPT_PARAM_ONOFF, true)
-
-	QREADY, WREADY, EREADY, RREADY = false, false, false, false
 
 	wTick = GetTickCount()
 end
 
 
 function PluginOnTick()	
-	QREADY = (myHero:CanUseSpell(_Q) == READY)
-	WREADY = (myHero:CanUseSpell(_W) == READY)
-	EREADY = (myHero:CanUseSpell(_E) == READY)
-	RREADY = (myHero:CanUseSpell(_R) == READY)
 
 	Target = AutoCarry.GetAttackTarget() 
 
 	wActive = (GetTickCount() - wTick < 5000 and not WREADY)
-	AutoCarry.CanAttack = (not wActive) 
+	if wActive then 
+		AutoCarry.CanAttack = false
+		AutoCarry.CanMove = false
+	end 
 
 	if Target and MainMenu.AutoCarry then
 		if not wActive then
 			AutoCarry.CanMove = true
-			if EREADY and GetDistance(Target) <= eRange then
-				CastSpell(_E, Target)
-			end
-
-			if WREADY and GetDistance(Target) <= wRange then
-				wTick = GetTickCount()
-				CastSpell(_W, Target)
-			end
-
-			if QREADY and GetDistance(Target) <= qRange then
-				CastSpell(_Q, Target)
-			end
-
-			--> Kill with ult
-			if RREADY and GetDistance(Target) <= rRange and Target.health < getDmg("R", myHero, Target) then
-				CastSpell(_R, Target) 
-			elseif RREADY and GetDistance(Target) <= rRange then
-				if PluginMenu.RMec then
-					local p = GetAoESpellPosition(600, Target)
-					if p and GetDistance(p) <= rRange and CountEnemies(p, rRange) >= 2 then
-						CastSpell(_R, p.x, p.z)
-					end
-				end
-			end
+			AutoCarry.CanAttack = true
+			if SkillE:Ready() then SkillE:Cast(Target) end 
+			if SkillW:Ready() then SkillW:Cast(Target) wTick = GetTickCount() end 
+			if SkillQ:Ready() then SkillQ:Cast(Target) end 
+			if SkillR:Ready() and (getDmg("R", Target, myHero) >= Target.health or Monitor.CountEnemies(myHero, SkillR.range) >= 2) then
+				SkillR:Cast(Target)
+			end 
 		end
-
 	end
-
-end
-
-
-function CalculateDamage(enemy)
-	local totalDamage = 0
-	local currentMana = myHero.mana 
-	local qReady = QREADY and currentMana >= qMana[myHero:GetSpellData(_Q).level]
-	local wReady = WREADY and currentMana >= wMana[myHero:GetSpellData(_W).level]
-	local eReady = EREADY and currentMana >= eMana[myHero:GetSpellData(_E).level]
-	local rReady = RREADY and currentMana >= rMana[myHero:GetSpellData(_R).level] 
-	if qReady then totalDamage = totalDamage + getDmg("Q", enemy, myHero) end
-	if wReady then totalDamage = totalDamage + getDmg("W", enemy, myHero) end
-	if eReady then totalDamage = totalDamage + getDmg("E", enemy, myHero) end
-	if rReady then totalDamage = totalDamage + getDmg("R", enemy, myHero) end
-	return totalDamage 
-end 
-
-function CountEnemies(point, range)
-    local ChampCount = 0
-    for j = 1, heroManager.iCount, 1 do
-        local enemyhero = heroManager:getHero(j)
-        if myHero.team ~= enemyhero.team and ValidTarget(enemyhero, rRange + 50) then
-            if GetDistance(enemyhero, point) <= range then
-                ChampCount = ChampCount + 1
-            end
-        end
-    end            
-    return ChampCount
 end

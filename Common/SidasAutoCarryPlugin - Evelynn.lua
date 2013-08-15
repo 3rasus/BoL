@@ -3,21 +3,22 @@
 	Credits to Burn for his origional combo
 
 	Version: 1.0
+	- Initial release
 	
+	Version 1.2 
+	- Converted to iFoundation_v2 
+	- Bug fixes
+
+		
 ]] 
 
 require "AoE_Skillshot_Position"
+require "iFoundation_v2"
 
--- Constants
-local eRange = 225
-local qRange = 500 
-local rRange = 650
-
-local qMana = {16, 22, 28, 34, 40}
-local wMana = 0
-local eMana = {50, 55, 60, 65, 70}
-local rMana = 100
-
+local SkillQ = Caster(_Q, 500, SPELL_SELF)
+local SkillW = Caster(_W, 0, SPELL_SELF)
+local SkillE = Caster(_E, 225, SPELL_TARGETED)
+local SkillR = Caster(_R, 650, SPELL_CIRCLE, math.huge, 0, 0, true)
 
 
 function PluginOnLoad() 
@@ -32,44 +33,30 @@ function PluginOnLoad()
 	PluginMenu:addParam("RMec", "Use MEC for R", SCRIPT_PARAM_ONOFF, true)
 	PluginMenu:addParam("UseW", "Auto-Enable W when low health", SCRIPT_PARAM_ONOFF, true)
 	PluginMenu:addParam("WPercentage", "Percentage of health to use W",SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
-
-	-- Local variables
-	QREADY, WREADY, EREADY, RREADY = false, false, false, false
 end
 
 
 function PluginOnTick()
-	-- Readies 
-	QREADY = (myHero:CanUseSpell(_Q) == READY)
-	EREADY = (myHero:CanUseSpell(_E) == READY)
-	WREADY = (myHero:CanUseSpell(_W) == READY)
-	RREADY = (myHero:CanUseSpell(_R) == READY)
-
 	Target = AutoCarry.GetAttackTarget()
 
 	
 	if Target and MainMenu.AutoCarry then
 
-		if WREADY and PluginMenu.UseW and myHero.health <= myHero.maxHealth * (PluginMenu.WPercentage / 100) then
-			CastSpell(_W)
+		if SkillW:Ready() and PluginMenu.UseW and myHero.health <= myHero.maxHealth * (PluginMenu.WPercentage / 100) then
+			SkillW:Cast(Target)
 		end
 
-		if QREADY and GetDistance(Target) <= qRange then
-			CastSpell(_Q)
-		end
+		if SkillQ:Ready() then SkillQ:Cast(Target) end 
+		if SkillE:Ready() then SkillE:Cast(Target) end 	
 
-		if EREADY and GetDistance(Target) <= eRange then
-			CastSpell(_E, Target)
-		end
-
-		if RREADY and GetDistance(Target) <= rRange then
+		if SkillR:Ready() and GetDistance(Target) <= SkillR.range then
 			if PluginMenu.RMec then
 				local p = GetAoESpellPosition(350, Target)
-				if p and GetDistance(p) <= rRange then
+				if p and GetDistance(p) <= SkillR.range then
 					CastSpell(_R, p.x, p.z)
 				end
 			else
-				CastSpell(_R, Target.x, Target.z)
+				SkillR:Cast(Target)
 			end
 		end
 
@@ -89,41 +76,3 @@ function PluginOnTick()
 
 end
 
-function CountEnemies(point, range)
-    local ChampCount = 0
-    for j = 1, heroManager.iCount, 1 do
-        local enemyhero = heroManager:getHero(j)
-        if myHero.team ~= enemyhero.team and ValidTarget(enemyhero, rRange + 50) then
-            if GetDistance(enemyhero, point) <= range then
-                ChampCount = ChampCount + 1
-            end
-        end
-    end            
-    return ChampCount
-end
-
-function PluginOnDraw() 
-	if Target then
-		DrawCircle(Target.x, Target.y, Target.z, 65, 0x00FF00)
-		local text = ""
-		if Target.health <= CalculateDamage(Target) then
-			text = "Killable"
-		else
-			text = "Wait for Cooldowns"
-		end
-		PrintFloatText(Target, 0, text)
-	end
-end
-
-
-function CalculateDamage(enemy) 
-	local totalDamage = 0
-	local currentMana = myHero.mana 
-	local qReady = QREADY and currentMana >= qMana[myHero:GetSpellData(_Q).level]
-	local eReady = EREADY and currentMana >= eMana[myHero:GetSpellData(_E).level]
-	local rReady = RREADY and currentMana >= rMana
-	if qReady then totalDamage = totalDamage + getDmg("Q", enemy, myHero) end
-	if eReady then totalDamage = totalDamage + getDmg("E", enemy, myHero) end
-	if rReady then totalDamage = totalDamage + getDmg("R", enemy, myHero) end
-	return totalDamage
-end

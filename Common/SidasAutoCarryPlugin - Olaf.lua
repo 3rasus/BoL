@@ -1,23 +1,21 @@
 --[[
 
-	SAC Nasus plugin
+	SAC Olaf plugin
 
 	Features
-		- Basic combo
-			- Q > E > W > R
+		- Smart combo
+			- Q > W > E > R (if conditions are on myself)
 
 	Version 1.0 
 	- Initial release
 
-	Version 1.2 
-	- Converted to iFoundation_v2
-
 --]]
 
 require "iFoundation_v2"
-local SkillQ = Caster(_Q, math.huge, SPELL_SELF)
-local SkillW = Caster(_W, 700, SPELL_TARGETED)
-local SkillE = Caster(_E, 650, SPELL_CIRCLE)
+
+local SkillQ = Caster(_Q, 1000, SPELL_LINEAR, 1650, 0.234, 100, true)
+local SkillW = Caster(_W, 225, SPELL_SELF)
+local SkillE = Caster(_E, 250, SPELL_TARGETED)
 local SkillR = Caster(_R, 300, SPELL_SELF)
 
 function PluginOnLoad()
@@ -35,8 +33,10 @@ function PluginOnTick()
 
 	if Target and MainMenu.AutoCarry then
 		if SkillQ:Ready() then SkillQ:Cast(Target) end 
+		if SkillW:Ready() and ValidTarget(Target, SkillW.range) then SkillW:Cast(Target) end 
 		if SkillE:Ready() then SkillE:Cast(Target) end 
-		if SkillW:Ready() then SkillW:Cast(Target) end 	
-		if SkillR:Ready() then SkillR:Cast(Target) end 	
+		if SkillR:Ready() and (myHero.isTaunted or myHero.isCharmed or myHero.isFeared or myHero.isFleeing) then
+			SkillR:Cast(Target)
+		end 
 	end
 end

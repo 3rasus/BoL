@@ -1,20 +1,23 @@
 --[[
-	1.0 DONE 
 	SAC Nocturne Plugin
+
+	Features 
+		- Smart combo
+			- Q > W > E
+
+	Version 1.0 
+	- Initial release
+
+	Version 1.2 
+	- Converted to iFoundation_v2
 
 --]]
 
-require "iFoundation"
+require "iFoundation_v2"
 local SkillQ = Caster(_Q, 1200, SPELL_LINEAR, 1398, 0.249, 50, true) 
 local SkillW = Caster(_W, math.huge, SPELL_SELF)
 local SkillE = Caster(_E, 425, SPELL_TARGETED)
 -- ignore R... 
-
-local dmgCalc = DamageCalculation(true, {"Q", "W", "E", "R"}) 
-local draw = Draw(dmgCalc) 
-
-local monitor = nil
-
 function PluginOnLoad()
 
 	AutoCarry.SkillsCrosshair.range = 1200
@@ -23,13 +26,9 @@ function PluginOnLoad()
 	PluginMenu = AutoCarry.PluginMenu
     PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
 	PluginMenu:addParam("wDistance", "W distance", SCRIPT_PARAM_SLICE, 0, 0, 500, 0)
-	monitor = Monitor(PluginMenu)
 end
 
 function PluginOnTick()
-	monitor:MonitorTeam(700)
-	monitor:MonitorLowTeamate()
-	monitor:AutoPotion()
 	Target = AutoCarry.GetAttackTarget()
 
 	if Target and MainMenu.AutoCarry then
@@ -39,12 +38,7 @@ function PluginOnTick()
 	end
 
 	if MainMenu.LastHit then
-		dmgCalc:LastHitMinion(SkillQ, "Q")
+		Combat.LastHit(SkillQ)
 	end
 
-end
-
-function PluginOnDraw()
-	if Target == nil then return false end 
-	draw:DrawTarget(Target)
 end

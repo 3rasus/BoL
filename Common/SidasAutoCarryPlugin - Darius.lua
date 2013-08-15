@@ -2,17 +2,19 @@
 
 	SAC Darius plugin
 	Credits to Lux for his Hemo counter 
+
+	Version 1.2 
+	- Converted to iFoundation_v2
+
+	LAST TESTED 8.12 WORKING MORE THEN PERFECT (INb4NERF)
 --]]
 
-require "iFoundation"
+require "iFoundation_v2"
 
 local SkillQ = Caster(_Q, 425, SPELL_SELF)
 local SkillW = Caster(_W, 145, SPELL_SELF)
 local SkillE = Caster(_E, 540, SPELL_LINEAR_COL, math.huge, 0, 100, true)
 local SkillR = Caster(_R, 460, SPELL_TARGETED)
-
-local dmgCalc = DamageCalculation(true, {"Q", "W", "E", "R"}) 
-local draw = Draw(dmgCalc) 
 
 local hemoTable = {
         [1] = "darius_hemo_counter_01.troy",
@@ -35,7 +37,7 @@ function PluginOnLoad()
 
 	for i=0, heroManager.iCount, 1 do
         local playerObj = heroManager:GetHero(i)
-        if playerObj and playerObj.team ~= player.team then
+        if playerObj and playerObj.team ~= myHero.team then
                 playerObj.hemo = { tick = 0, count = 0, }
                 table.insert(enemyTable,playerObj)
         end
@@ -54,7 +56,7 @@ function PluginOnTick()
 		-- count hemo
 		if enemy.hemo.count >= 1 then
 			if SkillR:Ready() then
-				if dmgCalc:GetDamage("R", Target) * (enemy.hemo.count * 0.2) > Target.health then
+				if getDmg("R", Target, myHero) * (enemy.hemo.count * 0.2) > Target.health then
 					SkillR:Cast(Target) 
 				elseif enemy.hemo.count == 5 and PluginMenu.rMaxStack then
 					SkillR:Cast(Target)
@@ -69,11 +71,6 @@ function PluginOnTick()
 	end
 end
 
-function PluginOnDraw()
-	if Target == nil then return false end 
-	draw:DrawTarget(Target)
-end
-
 function GetEnemy(target) 
 	for i, enemy in pairs(enemyTable) do 
 		if enemy and not enemy.dead and enemy.visible and enemy == target then
@@ -86,7 +83,7 @@ function PluginOnCreateObj(obj)
 	if obj then
 		if string.find(string.lower(obj.name),"darius_hemo_counter") then
             for i, enemy in pairs(enemyTable) do
-                if enemy and not enemy.dead and enemy.visible and GetDistance2D(enemy,obj) <= 500 then
+                if enemy and not enemy.dead and enemy.visible and GetDistance(enemy,obj) <= 50 then
                     for k, hemo in pairs(hemoTable) do
                         if obj.name == hemo then
                             enemy.hemo.tick = GetTickCount()

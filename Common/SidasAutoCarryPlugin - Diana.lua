@@ -2,9 +2,16 @@
 	Diana SAC Plugin
 	
 	Major credit to Llama for Prediction 
+    
+    Version 1.2
+    - Converted to iFoundation_v2 
+    - Bug fixes
+
+    LAST TESTED 8.12 WORKING PERFECTLY
 
 --]]
-
+    
+require "iFoundation_v2"    
 -->> START From Llama <<--
 --------------------------
 local thetaIterator = 4 --increase to improve performance (0 - 10)
@@ -44,15 +51,10 @@ local MoonLightArray = {}
 local qTick = 0
 local rDelay = 0
 
-local qRange = 830
-local wRange = 200
-local eRange = 250
-local rRange = 825
-
-local qMana = 55
-local wMana = {60, 70, 80, 90, 100}
-local eMana = 70
-local rMana = {50, 65, 80}
+local SkillQ = Caster(_Q, 830, SPELL_LINEAR_COL, math.huge, 0, 0, true)
+local SkillW = Caster(_W, 200, SPELL_SELF)
+local SkillE = Caster(_E, 250, SPELL_SELF)
+local SkillR = Caster(_R, 825, SPELL_TARGETED)
 
 function PluginOnLoad()
 	AutoCarry.SkillsCrosshair.range = 800
@@ -64,7 +66,7 @@ function PluginOnLoad()
 
     enemyMinions = minionManager(MINION_ENEMY, rangeMax, player, MINION_SORT_HEALTH_ASC)
 
-	QREADY, WREADY, EREADY, RREADY = false, false, false, false
+    Buffs.Instance()
 end
 
 function PluginOnTick() 
@@ -75,11 +77,6 @@ function PluginOnTick()
     end
     AttackDelayLatency = ((1000 * (-0.435 + (0.625 / 0.625))) / (myHero.attackSpeed / (1 / 0.625))) - GetLatency() * 2
 
-    QREADY = (myHero:CanUseSpell(_Q) == READY)
-	WREADY = (myHero:CanUseSpell(_W) == READY)
-	EREADY = (myHero:CanUseSpell(_E) == READY)
-	RREADY = (myHero:CanUseSpell(_R) == READY)
-
 	Target = AutoCarry.GetAttackTarget()
 
 	if Target then
@@ -89,46 +86,38 @@ function PluginOnTick()
 	if Target and MainMenu.AutoCarry then
 
 		--> Q Poke 
-		if QREADY and GetDistance(Target) <= qRange then
+		if myHero:CanUseSpell(_Q) == READY and GetDistance(Target) <= SkillQ.range then
 			CrescentCollision(MODE_CHAMP)
 			CastQ()
 		end
 
-		if RREADY and HasMoonlight(Target) and CalculateDamage(Target) >= Target.health and GetDistance(Target) <= rRange then
-			CastSpell(_R, Target)
+		if SkillR:Ready() and (HasMoonlight(Target) or getDmg("R", Target, myHero) > Target.health)then
+			SkillR:Cast(Target)
 		end
 
-		if WREADY and GetDistance(Target) <= wRange then 
-			CastSpell(_W)
-		end
+		if SkillW:Ready() then SkillW:Cast(Target) end 
 
-		if EREADY and GetDistance(Target) <= eRange then
-			CastSpell(_E)
-		end
+		if SkillE:Ready() then SkillE:Cast(Target) end 
 
 	end
 
 	if Target and PluginMenu.MisayaCombo then
-		if QREADY and GetDistance(Target) <= qRange then
+		if myHero:CanUseSpell(_Q) == READY and GetDistance(Target) <= SkillQ.range then
 			CrescentCollision(MODE_CHAMP)
 			CastQ()
 			rDelay = (250 + (GetDistance(qPred) / 1.8))
 			qTick = GetTickCount() 
 		end
 
-		if RREADY and GetDistance(Target) <= rRange then
+		if SkillR:Ready() then
 			if GetTickCount() - qTick >= rDelay and GetTickCount() - qTick < 3000 - rDelay then
-				CastSpell(_R, Target)
+				SkillR:Cast(Target)
 			end
 		end
 
-		if WREADY and GetDistance(Target) <= wRange then 
-			CastSpell(_W)
-		end
+		if SkillW:Ready() then SkillW:Cast(Target) end 
 
-		if EREADY and GetDistance(Target) <= eRange then
-			CastSpell(_E)
-		end
+        if SkillE:Ready() then SkillE:Cast(Target) end 
 	end
 
     if MainMenu.LastHit then 
@@ -144,7 +133,7 @@ function PluginOnTick()
 end 
 
 function HasMoonlight(target)
-	return TargetHaveBuff("dianamoonlight", target)
+	return Buffs.TargetHaveBuff("dianamoonlight", target)
 end
 
 function PluginOnProcessSpell(unit, spell)
@@ -152,7 +141,7 @@ function PluginOnProcessSpell(unit, spell)
 end
 
 function CastQ() 
-	if qPred ~= nil and QREADY and GetDistance(qPred) <= rangeMax then 
+	if qPred ~= nil and SkillQ:Ready() and GetDistance(qPred) <= rangeMax then 
 		if highestCollision > 0 then
 			CastSpell(_Q, myHero.x + highestRange * math.cos(highestAngle), myHero.z + highestRange * math.sin(highestAngle))
 		else
@@ -160,21 +149,6 @@ function CastQ()
 		end
         
 	end
-end 
-
-function CalculateDamage(enemy)
-	local totalDamage = 0
-	local currentMana = myHero.mana 
-	local qReady = QREADY and currentMana >= qMana
-	local wReady = WREADY and currentMana >= wMana[myHero:GetSpellData(_W).level]
-	local eReady = EREADY and currentMana >= eMana
-	local rReady = RREADY and currentMana >= rMana[myHero:GetSpellData(_R).level] 
-	if qReady then totalDamage = totalDamage + getDmg("Q", enemy, myHero) end
-	if wReady then totalDamage = totalDamage + getDmg("W", enemy, myHero) end
-	if eReady then totalDamage = totalDamage + getDmg("E", enemy, myHero) end
-	if rReady then totalDamage = totalDamage + getDmg("R", enemy, myHero) end
-	return totalDamage 
-
 end 
 
 --> START Llama Prediction <<--
