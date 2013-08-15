@@ -12,4 +12,78 @@
 	- Converted to iFoundation_v2
 --]]
 
-LoadVIPScript("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DDD7E5127C9EC22E3F8C91E0296E26C4")
+require "iFoundation_v2"
+local SkillQ = Caster(_Q, 770, SPELL_LINEAR, math.huge, 0.200, 100, true)
+local SkillW = Caster(_W, math.huge, SPELL_SELF)
+local SkillE = Caster(_E, 830, SPELL_CIRCLE, math.huge, 0.200, 100, true)
+local SkillR = Caster(_R, 650, SPELL_TARGETED)
+
+local dStandard = nil
+local qDelay = 0
+
+function PluginOnLoad()
+
+	AutoCarry.SkillsCrosshair.range = 600
+
+	MainMenu = AutoCarry.MainMenu
+	PluginMenu = AutoCarry.PluginMenu
+	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	PluginMenu:addParam("eChase", "Chase with E", SCRIPT_PARAM_ONOFF, true)
+	PluginMenu:addParam("wDistance", "W Distance",SCRIPT_PARAM_SLICE, 0, 0, 600, 0)
+	PluginMenu:addParam("eBuff", "Use E for buff (may miss chase)", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("T"))
+	AutoShield.Instance(SkillW.range, SkillW)
+end
+
+function PluginOnTick()
+	Target = AutoCarry.GetAttackTarget()
+
+	if dStandard ~= nil and not dStandard.valid then
+		dStandard = nil
+	end 
+
+	if Target and MainMenu.AutoCarry then
+		--[[if (PluginMenu.eChase or dmgCalc:CalculateRealDamage(true, Target) > Target.health) and GetDistance(Target) >= SkillQ.range then 
+			if dStandard ~= nil and dStandard.valid then 
+				if GetDistance(dStandard, Target) <= 300 and SkillQ:Ready() then
+					SkillQ:Cast(dStandard) 
+				end 
+			elseif SkillE:Ready() then 
+				SkillE:Cast(Target)
+			end  
+		end]]--
+		if SkillE:Ready() then SkillE:Cast(Target) end  
+		--if SkillW:Ready() and GetDistance(Target) <= PluginMenu.wDistance then SkillW:Cast(Target) end 
+        if SkillQ:Ready() then 
+			--[[if dStandard ~= nil then
+				SkillQ:Cast(dStandard)
+				dStandard = nil
+			else--]] 
+				SkillQ:Cast(Target)
+			--end 
+		end
+		if PluginMenu.eBuff and SkillE:Ready() then SkillE:Cast(myHero) end 
+	end
+
+end
+
+function PluginOnCreateObj(obj)
+ 
+        if obj ~= nil and string.find(obj.name, "JarvanDemacianStandard_buf") then
+ 
+                dStandard = obj
+ 
+        end
+ 
+end
+ 
+ 
+ 
+function PluginOnDeleteObj(obj)
+ 
+        if obj ~= nil and string.find(obj.name, "JarvanDemacianStandard_buf") then
+ 
+                dStandard = nil
+ 
+        end
+ 
+end
