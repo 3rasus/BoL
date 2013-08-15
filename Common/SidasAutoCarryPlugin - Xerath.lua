@@ -14,4 +14,80 @@
 
 --]]
 
-LoadVIPScript("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C768A527C658EA425A27AB50D5BC746E")
+require "iFoundation_v2"
+
+local SkillQ = Caster(_Q, 1050, SPELL_LINEAR, math.huge, 0.600) 
+local SkillW = Caster(_W, 1750, SPELL_SELF)
+local SkillE = Caster(_E, 650, SPELL_TARGETED)
+local SkillR = Caster(_R, 900, SPELL_CIRCLE, math.huge, 0.250)
+
+local wActive = false
+local rTick = 0
+
+function PluginOnLoad()
+
+	AutoCarry.SkillsCrosshair.range = 2000
+
+	MainMenu = AutoCarry.MainMenu
+	PluginMenu = AutoCarry.PluginMenu
+	--PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	--PluginMenu:addParam("", "", SCRIPT_PARAM_ONOFF, true)
+end
+
+function PluginOnTick()
+	Target = AutoCarry.GetAttackTarget()
+
+	if wActive then
+		SkillQ.range = 1750
+		SkillE.range = 950
+		SkillR.range = 1600
+	else
+		SkillQ.range = 1050 
+		SkillE.range = 650
+		SkillR.range = 900 
+	end 
+
+	if rTick ~= 0 and GetTickCount() - rTick > 12000 then
+		rTick = 0 
+	end 
+
+	if Target and MainMenu.AutoCarry then
+		
+		if (GetDistance(Target) > 1050 and GetDistance(Target) < 1750) and SkillW:Ready() and (SkillE:Ready() or SkillQ:Ready() or SkillR:Ready()) then
+			if not wActive then
+				SkillW:Cast(Target) 
+				SkillQ.range = 1750
+				SkillE.range = 950
+				SkillR.range = 1600
+			end 
+		end 
+
+		if SkillE:Ready() then SkillE:Cast(Target) end 
+		if SkillQ:Ready() then SkillQ:Cast(Target) end 
+		if SkillR:Ready() and ((rTick ~= 0 and GetTickCount() - rTick < 12000) or (DamageCalculation.CalculateRealDamage(Target) > Target.health or getDmg("R", Target, myHero) > Target.health)) then
+			if rTick == 0 then
+				rTick = GetTickCount()
+			end 
+			SkillR:Cast(Target) 
+		end 
+
+		if wActive and (GetDistance(Target) > 1750 or
+					((not SkillQ:Ready() or GetDistance(Target) > SkillQ.range) and (not SkillE:Ready() or GetDistance(Target) > SkillE.range) and (not SkillR:Ready() or GetDistance(Target) > SkillR.range))) then
+			SkillW:Cast(Target) 
+		end 
+	end
+end
+
+function PluginOnCreateObj(obj) 
+	if obj and obj.name:find("Xerath_LocusOfPower") then
+		wActive = true 
+		AutoCarry.CanMove = false
+	end 
+end 
+
+function PluginOnDeleteObj(obj) 
+	if obj and obj.name:find("Xerath_LocusOfPower") then
+		wActive = false
+		AutoCarry.CanMove = false
+	end 
+end 

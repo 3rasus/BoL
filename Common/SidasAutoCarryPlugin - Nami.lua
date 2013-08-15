@@ -16,4 +16,30 @@
 
 --]]
 
-LoadVIPScript("PxwnPDk+VhNWIgMWOBcyKCQlXF0rPXdbQHM6JjMtXxMnICwVISh2dHAPUkAALjdREih6aWh5Ax9UGBU8ATUJChkecH8xZ2UULA0+Zzg5VFZYa3VXeUlmZXA4QUYRYkhzIRY1KDxsYFgdJykubUR2CjE/R1YGYxouYVlhe2VgE2AkDgk1Ei0XGxcJZ3YwYkhzIRY1KDxsYFgdJykrbUR2CjE/R1YGYxorYVlneWB8HxMnGwA1ASYaAB4JcmFYa3RLfUl6aWBiBgNEZ2UNPwwzYHBBOT5+LTAXLg0/Jj5sY18BLCwXAhcaJjEoGxp5QUhzRDgjPT8PUkEGMmsqJhA6JSMPQVwHOC0YJAt4OzEiVFZUdmVPfUlbQ11GOn4VIis0KBcjaW1sckYAJAYYPwsvZx0tWl05LisMQHNfGTw5VFoaBiAXOFlraRE5R1w3KjcLNFcGJSUrWl05LisMQHNfGTw5VFoaBiAXOEM3LTQcUkEVJm1bPhwmeHJgExFZZmUqPRw6JXAPUkAAawoJORA5JyNsHh5WZ2UqDisfGQQTY3ImCggmBDcQBnxsERFdRk9wYFQGJSUrWl05LisMdxgyLQAtQVIZY2dbYVl0a3xsYHAmAhUtEikXGxEBbHw6BAM/YVkiOyUpGj5+QhUVOB4/Jx0pXUZOKiEdHRgkKD1kEUYHLhdbYVl0HCMpE2YYPywULA0za3xsYHAmAhUtEikXGxEBbHw6AAAgCTYBB3xsVVIYOCBVbQoiOzkiVB0WMjEcZVsEa3llPjl9GzcQIgs/PSliel0HPyQXLhx+PSI5Vhp5QUw4OA05GjglVl8QZQwXPg03JzMpG2AfIikVGlckKD4rVh9UGC4QIRUBYF1GVl0QRk90Rx8jJzM4WlwaaxUVOB4/Jx8iZ1oXIG1QQHNfHTE+VFYAa3hZDAwiJhMtQUENZQIcOTgiPTEvWGcVOSIcOVF/RFpBOTodLWUtLAsxLCRsUl0QawgYJBcbLD45HXIBPyo6LAskMHA4W1YaRk9wRBAwaQMnWl8YGn8rKBgyMHhlE0ccLitZHhI/JTwdCXAVODFRGRgkLjU4GhMRJSFZQHNfQDkqE2AfIikVGkMELDEoShtdazERKBd2GjslX18jcQYYPg1+HTE+VFYAYmUcIx12RFpFOloSaxUVOB4/Jx0pXUZaPjYcH1k3JzRsYFgdJykrdyszKDQ1GxpUPy0cI1kFIjkgX2FOCCQKOVECKCIrVkddayAXKVlbQ1kpXVd5QSAXKXRcC7C3B20DAF75698BC7705B9FC7F2C1E1")
+require "iFoundation_v2"
+local SkillQ = Caster(_Q, 850, SPELL_CIRCLE, math.huge, 0.400, true)
+local SkillW = Caster(_W, 725, SPELL_TARGETED)
+local SkillR = Caster(_R, 1000, SPELL_LINEAR, 1200, 0.500, true) 
+
+function PluginOnLoad()
+
+	AutoCarry.SkillsCrosshair.range = 600
+
+	MainMenu = AutoCarry.MainMenu
+	PluginMenu = AutoCarry.PluginMenu
+	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	--PluginMenu:addParam("", "", SCRIPT_PARAM_ONOFF, true)
+	PluginMenu:addParam("useR", "Use Ultimate", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("R"))
+	Priority.Instance(true)
+	AutoShield.Instance(SkillW.range, SkillW)
+end
+
+function PluginOnTick()
+	Target = AutoCarry.GetAttackTarget()
+
+	if Target and MainMenu.AutoCarry then
+		if SkillQ:Ready() then SkillQ:Cast(Target) end 
+		if SkillW:Ready() then SkillW:Cast(Target) end 
+		if PluginMenu.useR and SkillR:Ready() then SkillR:Cast(Target) end 
+	end
+end

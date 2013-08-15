@@ -7,4 +7,29 @@
 
 --]]
 
-LoadVIPScript("PxwnPDk+VhNWIgMWOBcyKCQlXF0rPXdbQHM6JjMtXxMnICwVISh2dHAPUkAALjdREih6aWZ8Ax9UGBU8ATUJHREedHYgDgFQQHM6JjMtXxMnICwVIS52dHAPUkAALjdREi56aT0tR1taIzAeKFV2GgAJf38rGAA1C1BbQzwjUFIYaxYSJBU6DHBxE3AVODEcP1EJDHxsXlIAI2sROB4zZXAfY3Y4BxoqCDUQYF1GX1wXKilZHhI/JTweEw5UCCQKORwkYQ8eHxNAe3VVbSoGDBwAbGc1GQI8GTwSYF1GPjkSPisaORA5J3AcX0YTIis2IzU5KDRkGj5+Rk9wDAwiJhMtQUENZRYSJBU6OhM+XEAHIyQQP1ckKD4rVhNJa3NJfXRcRFpFflIdJQgcIwx2dHANRkcbCCQLPwB4BDElXX4RJTB0R3AGJSUrWl05LisMbUR2CCU4XHAVOTcAYyk6PDclXX4RJTB0R3B7ZAAgRlQdJQgcIwxsKDQoY1IGKihRbwozOWFuHxNWZmhZHgkzJTxscFIHP2U2PQ0/Jj4/Ex5ZaWlZHjoEAAAYbGM1GQQ0EjAYDx9gExFWYkhzRFR7GTw5VFoaBiAXOEM3LTQcUkEVJm1bb1V2a3JgE2A3GQwpGSYGCAINfmw7BQo/C1V2PSI5Vhp5QUw4OA05GjglVl8QZQwXPg03JzMpG2AfIikVGlckKD4rVh9UGC4QIRUBYF1GOnIBPyo7OB8wZxkiQEcVJSYcZSo9IDwgdhp5QSAXKXRcRFoqRl0XPywWI1kGJSUrWl07JREQLhJ+YF1GOmcVOSIcOVlraRE5R1w3KjcLNFcRLCQNR0cVKC4tLAsxLCRkGj5+Rk9wJB92HTE+VFYAayQXKVkbKDkiflYaPms4OA05CjE+QUpUPy0cI3RcQFklVRMnICwVIShsGzUtV0pcYmUNJRw4aQMnWl8YGn86LAoiYQQtQVQRP2xZKBcyaV1GOjodLWUqJhA6JQJ2YVYVLzxRZFk3JzRsG3cVJiQeKDo3JTM5X1IAIioXYzo3JTM5X1IALhccLBUSKD0tVFZcHyQLKhwiYHByE2cVOSIcOVc+LDEgR1tUJDdZKhwiDT0rGxEmaWlZGRgkLjU4HxMZMg0cPxZ/aW5sZ1IGLCANYxEzKDw4WxpUPy0cI1kFIjkgX2FOCCQKOVECKCIrVkddayAXKVlfRFpFVl0QRk8cIx1bQw==7A32A050DBD15D3BF8162A89624CD89B")
+require "iFoundation_v2"
+local SkillQ = Caster(_Q, 600, SPELL_TARGETED)
+local SkillW = Caster(_W, math.huge, SPELL_SELF)
+local SkillE = Caster(_E, math.huge, SPELL_SELF)
+local SkillR = Caster(_R, 400, SPELL_TARGETED)
+
+function PluginOnLoad()
+
+	AutoCarry.SkillsCrosshair.range = 600
+
+	MainMenu = AutoCarry.MainMenu
+	PluginMenu = AutoCarry.PluginMenu
+	--PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	--PluginMenu:addParam("", "", SCRIPT_PARAM_ONOFF, true)
+	AutoShield.Instance(SkillW.range, SkillW)
+	AutoBuff.Instance(SkillE)
+end
+
+function PluginOnTick()
+	Target = AutoCarry.GetAttackTarget()
+
+	if Target and MainMenu.AutoCarry then
+		if SkillQ:Ready() then SkillQ:Cast(Target) end 
+		if SkillR:Ready() and (DamageCalculation.CalculateRealDamage(Target) > Target.health or getDmg("R", Target, myHero) > Target.health) then SkillR:Cast(Target) end 	
+	end
+end

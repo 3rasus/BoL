@@ -8,4 +8,66 @@
 	LAST TESTED 8.12 WORKING EXCEPT 789 LINE ERROR; HOWEVER DID NOT STOP PERFORMANCE
 --]]
 
-LoadVIPScript("PxwnPDk+VhNWIgMWOBcyKCQlXF0rPXdbQHNbQ31haGhUDgkwHjx2AQUBcn1UFhhUYHRcJT8vUl9UAzAULBcHaW1scFIHPyALZSYHZXB6AQZYaxYpCDUaFgQNYXQxHwA9ZHRcJT8vUl9UAzAULBcBaW1scFIHPyALZSYBZXB1BgNYaxYpCDUaFhwFfXY1GRo6AjV6aT0tR1taIzAeKFV2eXxsAgNEZ2UNPwwzYF1GX1wXKilZBQw7KD4JEw5UCCQKORwkYQ8JHxNFe3JMYVkFGRUAf2w4Ags8DCsJCh8AHxNFf3BJYVlmZ2J5Ax9UfnVVbQ0kPDVlPjl5QWhUFiJ2DBwFYHZUGBUwCTwEaQ0RHh55QSkWLhg6aQM8WlcRORRZcFkVKCM4VkFcFBRVbU1hfHxsYGMxBwkmGTgEDhUYdnddRk8VIho3JXAfQ1oQLjcubUR2CjE/R1YGYxouYVk7KCQkHVsBLCBVbSoGDBwAbGAxBwNQQHM6JjMtXxMnOywdKAsTaW1scFIHPyALZSYTZXB9AwRBZ2UqHTwaBQ8YcmEzDhE8CVBbQ11GHh4vEGUsAzAADAIfcn9UFhhUYHRcJT8vUl9UGC4QIRUEaW1scFIHPyALZSYEZXAhUkccZS0MKhx6aQMcdn84FBY8AT9/RFpBOV8bKCQVbRAlGiAlV1YGa3hZKxg6OjVsPjl5QSkWLhg6aT0jXVoAJDdZcFk4IDxBOT5+LTAXLg0/Jj5sY18BLCwXAhcaJjEoGxp5QUhzRDgjPT8PUkEGMmsqJhA6JSMPQVwHOC0YJAt4OzEiVFZUdmVPfUlbQ11GOn4VIis0KBcjaW1sckYAJAYYPwsvZx0tWl05LisMQHNfGTw5VFoaBiAXOFlraRE5R1w3KjcLNFcGJSUrWl05LisMQHNfGTw5VFoaBiAXOEM3LTQcUkEVJm1bPhwmeHJgExFZZmUqPRw6JXAPUkAAawoJORA5JyNsHh5WZ2UqDisfGQQTY3ImCggmBDcQBnxsERFdRk9wYFQGJSUrWl05LisMdxgyLQAtQVIZY2dbYVl0a3xsYHAmAhUtEikXGxEBbHw6BAM/YVkiOyUpGj5+QhUVOB4/Jx0pXUZOKiEdHRgkKD1kEXY+PigJAg8zOyIlV1ZWZ2VbBww7OXA7WkccawBZZQ05aQQtQVQRP2xZOhAiIXAPXF4WJGdVbSoVGxkcZ2wkChc4ACYZBxsJamc7DAI1CFV2LzEgQFZYazYNPxA4Ln4uSkcRY2c4b1B/RFpFY18BLCwXABw4PGotV1ckKjcYIFF0DBo5XkNWZ2VbHgk/LTU+E3ZUDywKORg4KjVsG3kBJjVQb1UFCgIFY2crGwQrDDQJGhwFcHZYa3FJfVV2eXxsAgNDfmlZfVBbQ1kcX0YTIis0KBcjczEoV2MVOSQUZVskDTk/R1IaKCBbYVl0G3AfUlUAMmUdJAoiKD4vVhFYGAYrBCkCFgANYXI5FBY1BDoTZXB8HxNEZ2VBfUl6aWBlPjkRJSF0R3RcLyUiUEcdJCtZHRUjLjkifF0gIiYSZVBbQ1kYUkETLjFZcFkXPCQjcFIGOTxXChwiCCQ4UlAfHyQLKhwiYXlBOTodOBYJJB0zO3BxE14NAyALIkMRLCQfQ1YYJwEYORh+FgJlHV0VJiBZcER2axUgWkARGRYJJB0zO3JBOT5+QiwfbS03OzcpRxMVJSFZABg/Jx0pXUZaCjANIjo3OyI1E0ccLit0R3RcQFklVRMaJDFZJAoFOTkoVkFUPy0cI3RcQFlFWlVUAzAULBcTcwIpUlcNY2xZOREzJ3AERl4VJQBDDhglPXgYUkETLjFQbRw4LXBBOTp9QiwfbTEjJDEiZAkmLiQdNFF/aSQkVl1UAzAULBcBcxMtQEdcHyQLKhwiYHApXVdURk9wRHA/L3AERl4VJRRDHxw3LSlkGhMAIyAXbTEjJDEiYgk3KjYNZS03OzcpRxpULisdbXRcQFlFWlVUJSoNbRAlGiAlV1YGayQXKVkFIjkgX2FOGSAYKQB+YHA4W1YaaxYSJBU6G2oPUkAAYxEYPx4zPXlsVl0Qa0xwQHNfQDUiVxN5QUhzRHA/L3AlQGAEIiEcP1kiITUiEz5+QkxwJB92GiAlV1YGDn8rKBgyMHhlE1IaL2VRZT4zPRQlQEcVJSYcZS03OzcpRxpUd3hZHRUjLjkiflYaPms8Bww7OXAjQRMwKigYKhwVKDwvRl8VPywWI1cVKDwvRl8VPyArKBg6DTEhUlQRYzELOBx6aQQtQVQRP2xZc1kCKCIrVkdaIyAYIQ0+YHAjQRMkJzAeJBcbLD45HXY+PigJAg8zOyIlV1ZdazERKBdbQ1lFOjonOywdKAsTcxMtQEdcHyQLKhwiYF1GOjp9LisdbXRcQFlFWlVUGDUQKRwkGGoeVlIQMm1QbQ0+LD5sYEMdLyALHEMVKCM4G2cVOSIcOVB2LD4oEz5+QkxwJB92GiAlV1YGHH8rKBgyMHhlE1IaL2VRChwiDTk/R1IaKCBRGRgkLjU4GhNIdmVMfVk5O3AIUl4VLCA6LBU1PDwtR1obJWs6LBU1PDwtR1YmLiQVCRg7KDcpG0cGPiBVbS03OzcpRxpUdWUtLAsxLCRiW1YVJzERZFkiITUiPjl9QkxwHgk/LTU+ZAk3KjYNZS03OzcpRxp5QUxwRBw4LV1GPjl9QkwQK1kRLCQIWkAAKisaKFECKCIrVkdda3tEbSk6PDclXX4RJTBXPz0/OiQtXVARayQXKVkFIjkgX2FOGSAYKQB+YHA4W1YaRk9wRHBfGjslX18mcQYYPg1+HTE+VFYAYkhzRHBfLD4oEz5+Rk9wRBw4LXBBOTp9Rk9wKBcyRFpBOVYaL0hzF9D42E5091AD1EBFE72EC8FBBCC6170E")
+require "iFoundation_v2"
+
+--[[ ELISE HUMAN ]]--
+local HumanQ = Caster(_Q, 625, SPELL_TARGETED)
+local HumanW = Caster(_W, 950, SPELL_LINEAR_COL, math.huge, 0, 100, true)
+local HumanE = Caster(_E, 1075, SPELL_LINEAR_COL, 1450, 0.250, 50, true)
+
+--[[ ELISE SPIDER ]]--
+local SpiderQ = Caster(_Q, 475, SPELL_TARGETED)
+local SpiderW = Caster(_W, math.huge, SPELL_SELF)
+local SpiderE = Caster(_E, 1075, SPELL_TARGETED)
+
+--[[ UNIVERSAL ]]--
+local SkillR = Caster(_R, math.huge, SPELL_SELF)
+
+local isSpider = false 
+
+local monitor = nil
+
+function PluginOnLoad()
+
+	AutoCarry.SkillsCrosshair.range = 600
+
+	MainMenu = AutoCarry.MainMenu
+	PluginMenu = AutoCarry.PluginMenu
+	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	--PluginMenu:addParam("", "", SCRIPT_PARAM_ONOFF, true)
+	PluginMenu:addParam("EJumpOverride", "Jump with E (to Target) with Combo", SCRIPT_PARAM_ONKEYTOGGLE, false, string.byte("A"))
+	PluginMenu:addParam("EJump", "Spider E Distance (Jump)",SCRIPT_PARAM_SLICE, 400, 0, 1075, 0)
+	PluginMenu:addParam("rDistance", "R Safty distance",SCRIPT_PARAM_SLICE, 0, 0, 800, 0)
+end
+
+function PluginOnTick()
+	Target = AutoCarry.GetAttackTarget()
+	isSpider = myHero:GetSpellData(_R).name == "EliseRSpider"
+
+	if Target and MainMenu.AutoCarry then
+
+		if not isSpider then
+			if HumanE:Ready() then HumanE:Cast(Target) end 
+			if HumanW:Ready() then HumanW:Cast(Target) end 
+			if HumanQ:Ready() then HumanQ:Cast(Target) end 
+			if not isSpider and SkillR:Ready() then SkillR:Cast(Target) end 		
+		end 
+
+		if isSpider then 
+			if SpiderE:Ready() and ((GetDistance(Target) <= PluginMenu.EJump or DamageCalculation.CalculateRealDamage(true, Target) > Target.health) or PluginMenu.EJumpOverride) then
+				SpiderE:Cast(Target)
+			end 
+			if SpiderQ:Ready() then SpiderQ:Cast(Target) end 
+			if SpiderW:Ready() and (GetDistance(Target) <= 50 or DamageCalculation.CalculateRealDamage(true, Target) > Target.health) then
+				SpiderW:Cast(Target)
+			end
+
+			if GetDistance(Target) >= PluginMenu.rDistance and SkillR:Ready() then
+				SkillR:Cast(Target)
+			end 
+
+		end 
+		
+	end
+
+end

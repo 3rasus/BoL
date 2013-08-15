@@ -6,4 +6,35 @@
 	- Inital release 
 --]]
 
-LoadVIPScript("PxwnPDk+VhNWIgMWOBcyKCQlXF0rPXdbQHM6JjMtXxMnICwVISh2dHAPUkAALjdREih6aWJ8Ax9UGBU8ATUJGhUAdRp5QSkWLhg6aQMnWl8YHGVEbTo3OiQpQRsrHGlZe0lmZXAfY3Y4Bxo6BCsVBRVgE14VPy1XJQwxLHxsAx1GfnVVbUtmeXlBOV8bKCQVbSo9IDwgdhNJawYYPg0zO3gTdh9UfnBJYVkFGRUAf2wgChc+CC0TDXlBOV8bKCQVbSo9IDwgYRNJawYYPg0zO3gTYR9Uc3BJYVkFGRUAf2wgChc+CC0TDQ8KYXoxBQE1FFBbQ11GVUYaKDEQIhd2GTw5VFoaBCs1IhgyYXlBOT5+QgQMORYVKCI+Sh0nICwVIQoVOz8/QFsVIjdXPxg4LjVsDhNMfnV0R3RcQB0tWl05LisMbUR2CCU4XHAVOTcAYzQ3ID4BVl0BRk9wHRUjLjkiflYaPmVEbTgjPT8PUkEGMmspIQwxID4BVl0BRk9wHRUjLjkiflYaPn8YKR0GKCItXhtWOCAJfFt6aXJhHhMnOyAVIVkVKCM4E3wEPywWIwp2ZH1uHxMnCBcwHS0JGREecn4rAgs/AlV2a3JlPjl9GykMKhA4BDUiRgkVLyEpLAs3JHhuQnUVOShbYVl0BTE/R3sdP2UOJA0+aQFuHxMnCBcwHS0JGREecn4rBAs2Cz96aSQ+RlZdRk9wHRUjLjkiflYaPn8YKR0GKCItXhtWORUcPxozJyQtVFZWZ2VbH1kGLCIvVl0AKiIcb1UFCgIFY2crGwQrDDQJGhwFcHZYa3RJYVlmZXB9AwNYa3VQQHNfCCU4XHEBLSNXBBclPTEiUFZcGC4QIRUHYF1GVl0QRk90Rx8jJzM4WlwaaxUVOB4/Jx8iZ1oXIG1QQHNfHTE+VFYAa3hZDAwiJhMtQUENZQIcOTgiPTEvWGcVOSIcOVF/RFpBOTodLWUtLAsxLCRsUl0QawgYJBcbLD45HXIBPyo6LAskMHA4W1YaRk9wRBAwaQMnWl8YGn8rKBgyMHhlE1IaL2UvLBU/LQQtQVQRP20tLAsxLCRgE2AfIikVHFckKD4rVhpUPy0cI1kFIjkgX2JOCCQKOVECKCIrVkddayAXKVlbQ1lFWlVUGC4QIRUTcwIpUlcNY2xZOREzJ3AfWFoYJwBDDhglPXgYUkETLjFQbRw4LXBBOTp9IiNZHhI/JTwbCWERKiEAZVB2PTgpXRMnICwVIS5sCjE/RxsgKjceKA1/aTUiVz5+QkwQK1kFIjkgX2FOGSAYKQB+YHA4W1YaawYWIBs3PX4PUkAAByoOKAoiYQMnWl8YGWlZHRUjLjkiflYaPmsLHRwkKjUiR1ITLmxZKBcyaXBBOToRJSF0R3RcQDkqE34VIis0KBcjZxwtQEc8IjFZLBcyaQAgRlQdJQgcIwx4OBYtQV5UPy0cI3RcQFkPXF4WKjFXARglPRglRxsnICwVISh6aQMnWl8YGmsLLBcxLHlBOToRJSFZQHMzJzRBOQ==AE19135C6B5E4A733FE87E19217ADF26")
+require "iFoundation_v2"
+local SkillQ = Caster(_Q, 200, SPELL_SELF)
+local SkillW = Caster(_W, 600, SPELL_CIRCLE, math.huge, 0.250, 200)
+local SkillE = Caster(_E, 550, SPELL_TARGETED)
+local SkillR = Caster(_R, 850, SPELL_TARGETED_FRIENDLY)
+
+function PluginOnLoad()
+
+	AutoCarry.SkillsCrosshair.range = 850
+
+	MainMenu = AutoCarry.MainMenu
+	PluginMenu = AutoCarry.PluginMenu
+	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	PluginMenu:addParam("qFarm", "LastHit with Q", SCRIPT_PARAM_ONOFF, true)
+	PluginMenu:addParam("rPercentage", "R Percentage",SCRIPT_PARAM_SLICE, 10, 0, 100, 0)
+	AutoBuff.Instance(SkillQ)
+end
+
+function PluginOnTick()
+	Target = AutoCarry.GetAttackTarget()
+
+	if Target and MainMenu.AutoCarry then
+		if SkillQ:Ready() and ValidTarget(Target, SkillQ.range) then SkillQ:Cast(Target) end 
+		if SkillE:Ready() then SkillE:Cast(Target) end 
+		if SkillW:Ready() then SkillW:Cast(Target) end
+		if SkillR:Ready() then Combat.CastLowest(SkillR, PluginMenu.rPercentage) end  
+	end
+
+	if MainMenu.LastHit and PluginMenu.qFarm then
+		Combat.LastHit(SkillQ, SkillQ.range)
+	end 
+end

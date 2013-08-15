@@ -16,4 +16,45 @@
 
 --]]
 
-LoadVIPScript("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C1F4FAFF511F546F50D2851F2856EDD4")
+require "iFoundation_v2"
+local SkillQ = Caster(_Q, math.huge, SPELL_SELF)
+local SkillW = Caster(_W, 900, SPELL_CIRCLE, math.huge, 0, 100, true)
+local SkillE = Caster(_E, 650, SPELL_TARGETED)
+local SkillR = Caster(_R, 645, SPELL_TARGETED)
+
+function PluginOnLoad()
+
+	AutoCarry.SkillsCrosshair.range = 600
+
+	MainMenu = AutoCarry.MainMenu
+	PluginMenu = AutoCarry.PluginMenu
+	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	PluginMenu:addParam("pushBackCombo", "Push back combo", SCRIPT_PARAM_ONKEYDOWN, false, string.byte("R"))
+	AutoBuff.Instance(SkillQ)
+end
+
+function PluginOnTick()
+	Target = AutoCarry.GetAttackTarget()
+
+	if Target and MainMenu.AutoCarry then
+		if PluginMenu.pushBackCombo then
+			if SkillW:Ready() then PlaceWall(Target) end 
+			if SkillE:Ready() then SkillE:Cast(Target) end 
+			if SkillR:Ready() then SkillR:Cast(Target) end 
+		else
+			if SkillW:Ready() then SkillW:Cast(Target) end  
+			if SkillE:Ready() then SkillE:Cast(Target) end 
+			if SkillR:Ready() and getDmg("R", Target, myHero) > Target.health then SkillR:Cast(Target) end 
+		end  	
+	end
+end
+
+
+function PlaceWall(enemy) 
+	if SkillW:Ready() and GetDistance(enemy) <= SkillW.range then
+		local TargetPosition = Vector(enemy.x, enemy.y, enemy.z)
+		local MyPosition = Vector(myHero.x, myHero.y, myHero.z)		
+		local WallPosition = TargetPosition + (TargetPosition - MyPosition)*((150/GetDistance(enemy)))
+		CastSpell(_W, WallPosition.x, WallPosition.z)
+	end
+end

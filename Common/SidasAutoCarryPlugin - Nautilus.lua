@@ -11,4 +11,29 @@
 
 --]]
 
-LoadVIPScript("PxwnPDk+VhNWIgMWOBcyKCQlXF0rPXdbQHM6JjMtXxMnICwVISh2dHAPUkAALjdREih6aWF8AANYaxYpCDUaFhwFfXY1GRo6AjV6aWF0BwJYa3VXf0xmZXB9AwNYazELOBx/RFogXFAVJ2UqJhA6JQdsDhM3KjYNKAt+FgdgEwREe2lZHikTBRwTYHY4DWx0RxU5KjEgE2AfIikVCFlraRMtQEcROW0mCFV2f2B8HxMnGwA1ASYFDBwKGj5+JyoaLBV2GjslX18ma3hZDhglPTU+G2wmZ2VBeEl6aQMcdn84FBE4Hz4THXlBOT5+LTAXLg0/Jj5sY18BLCwXAhcaJjEoGxp5QUhzRDgjPT8PUkEGMmsqJhA6JSMPQVwHOC0YJAt4OzEiVFZUdmVIf0lmRFpBOTo5KiwXABw4PHBxE3IBPyo6LAskMH4BUloaBiAXOHRcQAAgRlQdJQgcIwx2dHANRkcbCCQLPwB4GTw5VFoaBiAXOHRcQH1hY18BLCwXABw4PGotV1ckKjcYIFF0OjU8AhFYa2dUYFkFOTUgXxM3KjYNbTYmPTkjXUBUZmhbYVkFCgIFY2crGwQrDDQJAB4KfB9UaWdQQHNfZH0cX0YTIis0KBcjczEoV2MVOSQUZVt0ZXBuER9UGAYrBCkCFgANYXI5FAo3Aj8QZXA4QUYRYkhzKBcyRFpBOVUBJSYNJBY4aQAgRlQdJQoXGRA1InhlPjl9HyQLKhwiaW1sckYAJAYYPwsvZxcpR3IAPyQaJi03OzcpRxtdRk90R3A/L3AYUkETLjFZLBcyaR0tWl05LisMYzgjPT8PUkEGMmUNJRw4RFpFOloSaxYSJBU6GGoeVlIQMm1QbQ0+LD5sYFgdJykodzo3OiRkZ1IGLCANZFkzJzRsPjl9QiwfbSo9IDwgdgkmLiQdNFF/aTEiVxMiKikQKS03OzcpRxsgKjceKA16aQMnWl8YDmsLLBcxLHlsR1sRJWUqJhA6JRV2cFIHP20tLAsxLCRlE1YaL2V0R3BfIDZsYFgdJykudyszKDQ1GxpUKisdbS83JTkoZ1IGLCANZS03OzcpRx9UGC4QIRUBZyItXVQRYmUNJRw4aQMnWl8YHH86LAoiYQQtQVQRP2xZKBcyaVlBOTp9IiNZHhI/JTweCWERKiEAZVB2KD4oExswKigYKhwVKDwvRl8VPywWI1cVKDwvRl8VPyArKBg6DTEhUlQRYxEYPx4zPXlsDRMgKjceKA14ITUtX0ccayoLbR4zPRQhVBtWGWdVbS03OzcpRx9UJjwxKAs5YHByE2cVOSIcOVc+LDEgR1tdazERKBd2GjslX18mcQYYPg1+HTE+VFYAYmUcIx12QF1GOlYaL0hzKBcy39A8DBDE688CA8410DF73BFAD03760DA")
+require "iFoundation_v2"
+local SkillQ = Caster(_Q, 1030, SPELL_LINEAR_COL, 1841, 0.250, 100, true)
+local SkillW = Caster(_W, 700, SPELL_SELF)
+local SkillE = Caster(_E, 600, SPELL_SELF)
+local SkillR = Caster(_R, 850, SPELL_TARGET)
+
+function PluginOnLoad()
+
+	AutoCarry.SkillsCrosshair.range = 1200
+
+	MainMenu = AutoCarry.MainMenu
+	PluginMenu = AutoCarry.PluginMenu
+	--PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	--PluginMenu:addParam("", "", SCRIPT_PARAM_ONOFF, true)
+end
+
+function PluginOnTick()
+	Target = AutoCarry.GetAttackTarget()
+
+	if Target and MainMenu.AutoCarry then
+		if SkillQ:Ready() then SkillQ:Cast(Target) end 
+		if SkillE:Ready() and ValidTarget(Target, SkillE.range) then SkillE:Cast(Target) end 
+		if SkillW:Ready() and ValidTarget(Target, SkillW.range) then SkillW:Cast(Target) end 	
+		if SkillR:Ready() and (DamageCalculation.CalculateRealDamage(Target) > Target.health or getDmg("R", Target, myHero) > Target.health) then SkillR:Cast(Target) end 	
+	end
+end

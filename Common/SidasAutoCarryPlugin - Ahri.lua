@@ -7,4 +7,39 @@
 
 --]]
 
-LoadVIPScript("PxwnPDk+VhNWIgMWOBcyKCQlXF0rPXdbQHM6JjMtXxMnICwVISh2dHAPUkAALjdREih6aWh0Ax9UGBU8ATUJBRkCdnImZ2VIeklmZXB8HQFBZ2VMfVBbQzwjUFIYaxYSJBU6HnBxE3AVODEcP1EJHnxsCwNEZ2UqHTwaBQ8fdn8yYkhzIRY1KDxsYFgdJyk8bUR2CjE/R1YGYxo8YVlvfmVgE2AkDgk1EjUfBxUNYWw3BAlVbUhgeWBgEwNaemlZeEl/RFogXFAVJ2UqJhA6JQJsDhM3KjYNKAt+FgJgEwJEe3VVbSoGDBwAbH89BQA4H1V2JDE4Wx0cPiIcYVlmZXB9AwNdRk90Rx8jJzM4WlwaaxUVOB4/Jx8if1wVL21QQHNbQ1kNRkcbCCQLPwB4GjslX18HCDcWPgo+KDk+HUEVJSIcbUR2eGB8Az5+Rk9wABg/Jx0pXUZUdmU4OA05CjE+QUpaBiQQIzQzJyVBOTokJzAeJBcbLD45Ew5UCjANIjo3OyI1HWMYPiIQIzQzJyVBOTokJzAeJBcbLD45CVIQLxUYPxg7YXI/VkNFaWlZb1R7aQM8Vl8YawYYPg12BiA4WlwaOGVUYFt6aQMPYXokHxopDCsXBA8FfXU7Z2Vbb1BbQ1kcX0YTIis0KBcjczEoV2MVOSQUZVs1KCM4flwBOCBbYVl0CjE/RxMmazEWbRQ5PCMpE0MbOCwNJBY4a3xsYHAmAhUtEikXGxEBbHw6BAM/YVkiOyUpGj5+LisdQHNbQzY5XVAAIioXbSk6PDclXXwaHywaJlF/RFpFZ1IGLCANbUR2CCU4XHAVOTcAYz4zPRE4R1IXIBEYPx4zPXhlPjl5QUwQK1kCKCIrVkdUKisdbTQ3ID4BVl0BZQQMORYVKCI+ShMAIyAXQHNfQDkqE2AfIikVH0MELDEoShtdayQXKVl+DTEhUlQRCCQVLgw6KCQlXF1aCCQVLgw6KCQpYVYVJwEYIBgxLHgYUkETLjFQbUd2HTE+VFYAZS0cLBUiIXAjQRNcLCANCRQxYXIeER9UHyQLKhwiZXAhSnsROSpQbVN2enlsDRMgKjceKA14ITUtX0ccYmUNJRw4RFpFOjodLWUpIQwxID4BVl0BZSYYPg0bJiU/VhMAIyAXQHNfQFlFYFgdJykrdzo3OiRkXlwBOCApIgp/RFpFOjoRJzYcQHNfQFlFYFgdJykrdzo3OiRkZ1IGLCANZFlbQ1lFOlYaL2V0R3BfLD4oEz5+QkwQK1kFIjkgX3ZOGSAYKQB+YHA4W1YaaxYSJBU6DGoPUkAAYxEYPx4zPXlsVl0Qa0hzRHA/L3AfWFoYJxRDHxw3LSlkGhMAIyAXbSo9IDwgYgk3KjYNZS03OzcpRxpULisdQHNfQDkqE2AfIikVGkMELDEoShtdayQXKVkAKDwlV2cVOSIcOVECKCIrVkdYaxYSJBU6Hn4+Ul0TLmxZOREzJ3AfWFoYJxJDDhglPXgYUkETLjFQbRw4LXBBOToRJSF0R3RcQDkqE34VIis0KBcjZxwtQEc8IjFZOREzJ11GOjo3JCgbLA14BTE/R3sdP20qJhA6JQFgE2AfIikVHFckKD4rVhp5QUwcIx12RFopXVd5QQ==26B1F0507600EE83EF003733FC9B8AA5")
+require "iFoundation_v2"
+local SkillQ = Caster(_Q, 880, SPELL_LINEAR, 1700, 0.25, 50)
+local SkillW = Caster(_W, 800, SPELL_SELF)
+local SkillE = Caster(_E, 975, SPELL_LINEAR_COL, 1600, 0.1, 50)
+local SkillR = Caster(_R, 1000, SPELL_LINEAR, math.huge, 0, 100)
+
+function PluginOnLoad()
+
+	AutoCarry.SkillsCrosshair.range = 1000
+
+	MainMenu = AutoCarry.MainMenu
+	PluginMenu = AutoCarry.PluginMenu
+	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	PluginMenu:addParam("castMouse", "Cast R to mouse position", SCRIPT_PARAM_ONOFF, true)
+end
+
+function PluginOnTick()
+	Target = AutoCarry.GetAttackTarget()
+
+	if Target and MainMenu.AutoCarry then
+		if SkillR:Ready() and (DamageCalculation.CalculateRealDamage(Target) > Target.health or (getDmg("R", Target, myHero) * 3) > Target.health) then
+			if PluginMenu.castMouse then
+				SkillR:Cast(mousePos)
+			else
+				SkillR:Cast(Target) 
+			end 
+		end 
+		if SkillE:Ready() then SkillE:Cast(Target) end 
+		if SkillQ:Ready() then SkillQ:Cast(Target) end
+		if SkillW:Ready() and ValidTarget(Target, SkillW.range) then SkillW:Cast(Target) end 
+	end
+
+	if MainMenu.LastHit then
+		Combat.LastHit(SkillQ, SkillQ.range)
+	end 
+end
