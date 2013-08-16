@@ -24,7 +24,7 @@ function PluginOnLoad()
 
 	PluginMenu:addParam("UseR", "Auto-Enable R when low health", SCRIPT_PARAM_ONOFF, true)
 	PluginMenu:addParam("RPercentage", "Percentage of health to use R",SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
-	PluginMenu:addParam("EJump", "Distance to jump in with E (when not killable)",SCRIPT_PARAM_SLICE, 400, 0, eRange, 0)
+	PluginMenu:addParam("EJump", "Distance to jump in with E (when not killable)",SCRIPT_PARAM_SLICE, 400, 0, 600, 0)
 end
 
 function PluginOnTick() 
