@@ -16,7 +16,7 @@
 
 require "iFoundation_v2"
 local SkillQ = Caster(_Q, 600, SPELL_TARGETED)
---local SkillW = Caster(_W, 700, SPELL_TARGETED)
+local SkillW = Caster(_W, math.huge, SPELL_SELF)
 local SkillE = Caster(_E, 600, SPELL_SELF)
 local SkillR = Caster(_R, 700, SPELL_CIRCLE)
 
@@ -30,6 +30,7 @@ function PluginOnLoad()
 	PluginMenu = AutoCarry.PluginMenu
 	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
 	PluginMenu:addParam("eStack", "Stack E", SCRIPT_PARAM_ONOFF, true)
+	AutoShield.Instance(SkillW.range, SkillW)
 end
 
 function PluginOnTick()
