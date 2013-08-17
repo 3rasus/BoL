@@ -518,6 +518,7 @@ class "Drawing" -- {
 		self.queue = {}
 		self.Menu = scriptConfig("iFoundation: Drawing", "idrawing")
 		self.Menu:addParam("drawPlayers", "Draw Players", SCRIPT_PARAM_ONOFF, true)
+		self.Menu:addParam("drawLines", "Draw Lines to Players", SCRIPT_PARAM_ONOFF, true)
 		self.Menu:addParam("playerDistance", "Max distance to draw players",SCRIPT_PARAM_SLICE, 1600, 0, 3000, 0)
 		AddDrawCallback(function(obj) self:OnDraw() end)
 	end 
@@ -571,7 +572,7 @@ class "Drawing" -- {
 			DrawCircle(Target.x, Target.y, Target.z, 40 + w * 1.5, tempColor:ToARGB())
 		end 
 		PrintFloatText(Target, 0, tempText .. " DMG: " .. round(realDamage))
-		if GetDistance(Target) <= self.Menu.playerDistance then 
+		if GetDistance(Target) <= self.Menu.playerDistance and self.Menu.drawLines then 
 			DrawArrows(myHero, Target, 30, 0x099B2299, 50)
 		end 
 	end 
