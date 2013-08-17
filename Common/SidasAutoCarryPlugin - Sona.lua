@@ -20,4 +20,137 @@
 
 --]]
 
-LoadVIPScript("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")
+require "iFoundation_v2"
+local SkillQ = Caster(_Q, 700, SPELL_SELF)
+local SkillW = Caster(_W, 1000, SPELL_SELF)
+local SkillE = Caster(_E, 1000, SPELL_SELF)
+local SkillR = Caster(_R, 1000, SPELL_LINEAR)
+
+local onPowerCord = false 
+local powerCordProc = false
+
+NONE = 0 -- DERP?
+VALOR = 1 -- AD/AP BUFF
+PERSEVERANCE = 2 -- RESISTANCE BUFF
+CELERITY = 3 -- MOVEMENT SPEED BUFF
+
+local AuraTable = {
+	["valoraura"] = VALOR, 
+	["perseveranceaura"] = PERSEVERANCE, 
+	["discordaura"] = CELERITY
+}
+
+local currentAura = nil
+
+function PluginOnLoad()
+
+	AutoCarry.SkillsCrosshair.range = 600
+
+	MainMenu = AutoCarry.MainMenu
+	PluginMenu = AutoCarry.PluginMenu
+	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	PluginMenu:addParam("qProc", "Q Proc", SCRIPT_PARAM_ONOFF, true)
+	PluginMenu:addParam("wPercentage", "W percentage",SCRIPT_PARAM_SLICE, 60, 0, 100, 0)
+	PluginMenu:addParam("pPercentage", "Panic percentage",SCRIPT_PARAM_SLICE, 60, 0, 100, 0)
+	--PluginMenu:addParam("eSpam", "Spam E when no enemies are near (mana hungry)", SCRIPT_PARAM_ONOFF, true)
+	AutoShield.Instance(SkillW.range, SkillW)
+	AutoShield.selfOverride = true
+end
+
+function PluginOnTick()
+	Target = AutoCarry.GetAttackTarget()
+
+	if Target and MainMenu.AutoCarry and not powerCordProc then
+
+		local ally, damage = GetHighestDamageAlly()
+		if onPowerCord and not powerCordProc then
+			--> Check for ally
+  			if ally then
+  				--> Slow enemy when killable 
+  				if SkillE:Ready() and (damage > Target.health) then
+  					SkillE:Cast(Target) 
+  					powerCordProc = true 
+  					PrintChat("T1")
+  				--> Otherwise decrease damage output 
+  				elseif SkillW:Ready() then 
+  					SkillW:Cast(Target)
+  					powerCordProc = true
+  					PrintChat("T2")
+  				end  
+  			else 
+  				--> Finally, cast Q if any ally is not near and we can poke the enemy
+  				if SkillQ:Ready() and PluginMenu.qProc then
+  					SkillQ:Cast(Target)
+  					powerCordProc = true
+  					PrintChat("T3")
+  				end 
+  			end  
+		end 
+
+		if ally and not powerCordProc then
+			if SkillR:Ready() and (damage > Target.health) then
+				SkillR:Cast(Target) 
+			elseif GetDistance(Target, ally) < 300 then
+				if ally.health < ally.maxHealth * (PluginMenu.wPercentage / 100) and SkillW:Ready() and currentAura ~= PERSEVERANCE then
+					SkillW:Cast(Target)
+				elseif SkillQ:Ready() and currentAura ~= VALOR then
+					SkillQ:Cast(Target) 
+				end 
+			elseif GetDistance(Target, ally) > 500 then
+				if SkillQ:Ready() and currentAura ~= VALOR then
+					SkillQ:Cast(Target) 
+				end 
+			end 
+		elseif not powerCordProc then 
+			if SkillQ:Ready() then SkillQ:Cast(Target) end 
+			if currentAura ~= CELERITY and myHero.health < myHero.maxHealth * (PluginMenu.pPercentage / 100) and SkillE:Ready() then
+				SkillE:Cast(Target) 
+			end 
+		end 
+	end
+		
+end
+
+function GetHighestDamageAlly() 
+	local bestChamp = nil 
+	local damage = math.huge
+	for _, player in pairs(Heroes.GetObjects(1, 1000)) do 
+		if not player.dead and not player.isMe then
+			if bestChamp == nil then
+				bestChamp = player
+				damage = DamageCalculation.CalculateRealDamage(Target, player)
+			elseif DamageCalculation.CalculateRealDamage(Target, player) > damage then
+				bestChamp = player
+				damage = DamageCalculation.CalculateRealDamage(Target, player) > Target
+			end 
+		end 
+	end 
+	return bestChamp, damage
+end 
+
+function OnGainBuff(unit, buff) 
+	if unit == nil or buff == nil then return end 
+	if unit.isMe and buff then
+		--PrintChat("GAINED: " .. buff.name)
+		if buff.name == "sonapowerchord" then
+			PrintChat("TRUE")
+			onPowerCord = true
+		end 
+		for aura, value in pairs(AuraTable) do
+			if buff.name:find(aura) then
+				currentAura = value
+			end 
+		end 
+	end 
+end 
+
+function OnLoseBuff(unit, buff) 
+	if unit == nil or buff == nil then return end 
+	if unit.isMe and buff then
+		--PrintChat("LOST: " .. buff.name)
+		if buff.name == "sonapowerchord" then
+			onPowerCord = false
+			powerCordProc = false
+		end 
+	end 
+end 
