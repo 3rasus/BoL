@@ -28,24 +28,21 @@ function PluginOnLoad()
 
 	MainMenu = AutoCarry.MainMenu
 	PluginMenu = AutoCarry.PluginMenu
-	--PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
-	--PluginMenu:addParam("", "", SCRIPT_PARAM_ONOFF, true)
+	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
+	PluginMenu:addParam("eStack", "Stack E", SCRIPT_PARAM_ONOFF, true)
 end
 
 function PluginOnTick()
 	Target = AutoCarry.GetAttackTarget()
 
-	if SkillE:Ready() and GetTickCount() - eTick >= 9500 then
-		eTick = 0
+	if SkillE:Ready() and PluginMenu.eStack and GetTickCount() - eTick >= 9500 then
+		eTick = GetTickCount()
 		SkillE:Cast(Target)
 	end 
 
 	if Target and MainMenu.AutoCarry then
 		if SkillQ:Ready() then SkillQ:Cast(Target) end 
 		if SkillE:Ready() then 
-			if eTick == 0 then
-				eTick = GetTickCount()
-			end 
 			SkillE:Cast(Target) 
 		end 
 		if SkillR:Ready() and ((DamageCalculation.CalculateRealDamage(Target) > Target.health) or (getDmg("R", Target, myHero) > Target.health))  then SkillR:Cast(Target) end 	
