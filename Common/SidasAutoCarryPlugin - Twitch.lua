@@ -24,7 +24,7 @@ local enemyTable = {}
 
 function PluginOnLoad()
 
-	AutoCarry.SkillsCrosshair.range = 600
+	AutoCarry.SkillsCrosshair.range = 1200
 
 	MainMenu = AutoCarry.MainMenu
 	PluginMenu = AutoCarry.PluginMenu
@@ -50,7 +50,7 @@ function PluginOnTick()
 
 	if Target and MainMenu.AutoCarry then
 
-		if enemy.posion.count > 4 then 
+		if enemy.posion.count == 6 then 
 			if SkillE:Ready() then SkillE:Cast(Target) end 
 		end 
 

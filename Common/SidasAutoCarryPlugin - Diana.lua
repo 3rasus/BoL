@@ -83,7 +83,7 @@ function PluginOnTick()
 		qPred = tp:GetPrediction(Target)
 	end
 
-	if Target and MainMenu.AutoCarry then
+	if Target and MainMenu.AutoCarry and not PluginMenu.MisayaCombo then
 
 		--> Q Poke 
 		if myHero:CanUseSpell(_Q) == READY and GetDistance(Target) <= SkillQ.range then
@@ -101,7 +101,7 @@ function PluginOnTick()
 
 	end
 
-	if Target and PluginMenu.MisayaCombo then
+	if Target and PluginMenu.MisayaCombo and MainMenu.AutoCarry then
 		if myHero:CanUseSpell(_Q) == READY and GetDistance(Target) <= SkillQ.range then
 			CrescentCollision(MODE_CHAMP)
 			CastQ()

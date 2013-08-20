@@ -29,6 +29,7 @@ function PluginOnLoad()
 	PluginMenu:addParam("rKS", "KS with R", SCRIPT_PARAM_ONOFF, true)
 	PluginMenu:addParam("wMonitor", "Monitor W", SCRIPT_PARAM_ONOFF, true)
 	PluginMenu:addParam("wPercentage", "Monitor w percentage",SCRIPT_PARAM_SLICE, 0, 0, 100, 0)
+	AutoShield.Instance(SkillW.range, SkillW)
 end
 
 function PluginOnTick()

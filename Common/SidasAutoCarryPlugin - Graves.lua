@@ -17,7 +17,7 @@
 require "iFoundation_v2"
 local SkillQ = Caster(_Q, 950, SPELL_LINEAR, 2150, 0.218, 200, true)
 local SkillW = Caster(_W, 950, SPELL_CIRCLE)
-local SkillE = Caster(_E, 425, SPELL_TARGETED)
+local SkillE = Caster(_E, 425, SPELL_LINEAR)
 local SkillR = Caster(_R, 1000, SPELL_LINEAR, 2250, 0.234, 150, true)
 
 function PluginOnLoad()
@@ -36,7 +36,7 @@ function PluginOnTick()
 	if Target and MainMenu.AutoCarry then
 		if SkillQ:Ready() then SkillQ:Cast(Target) end 
 		if SkillW:Ready() then SkillW:Cast(Target) end 
-		if SkillE:Ready() then if PluginMenu.eMouse then SkillE:Cast(mousePos) else SkillE:Cast(Target) end end 
+		if SkillE:Ready() then if PluginMenu.eMouse then CastSpell(_E, mousePos.x, mousePos.z) else SkillE:Cast(Target) end end 
 		if SkillR:Ready() and (DamageCalculation.CalculateRealDamage(Target) > Target.health or getDmg("R", Target, myHero) > Target.health) then SkillR:Cast(Target) end 
 	end
 end

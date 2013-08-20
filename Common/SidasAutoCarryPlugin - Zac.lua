@@ -18,7 +18,7 @@ local SkillR = Caster(_R, 0, SPELL_SELF)
 
 function PluginOnLoad()
 
-	AutoCarry.SkillsCrosshair.range = 600
+	AutoCarry.SkillsCrosshair.range = 1200
 
 	MainMenu = AutoCarry.MainMenu
 	PluginMenu = AutoCarry.PluginMenu
