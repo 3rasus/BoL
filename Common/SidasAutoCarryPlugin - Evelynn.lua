@@ -24,7 +24,7 @@ local SkillR = Caster(_R, 650, SPELL_CIRCLE, math.huge, 0, 0, true)
 function PluginOnLoad() 
 
 	-- AutoCarry Settings
-	AutoCarry.SkillsCrosshair.range = 500
+	AutoCarry.SkillsCrosshair.range = 650
 
 	MainMenu = AutoCarry.MainMenu
 	PluginMenu = AutoCarry.PluginMenu
@@ -64,13 +64,7 @@ function PluginOnTick()
 
 	-- Last Hitting
 	if MainMenu.LastHit then
-		for _, minion in pairs(AutoCarry.EnemyMinions().objects) do
-			if ValidTarget(minion) and QREADY and GetDistance(minion) <= qRange then
-				if minion.health < getDmg("Q", minion, myHero) then
-					CastSpell(_Q, minion)
-				end
-			end
-		end
+		Combat.LastHit(SkillQ)
 	end
 
 

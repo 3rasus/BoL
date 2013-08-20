@@ -46,21 +46,19 @@ function PluginOnTick()
 
 	if Target and MainMenu.AutoCarry then
 
-		if not isSpider then
+		if not isSpider and Target then
 			if HumanE:Ready() then HumanE:Cast(Target) end 
 			if HumanW:Ready() then HumanW:Cast(Target) end 
 			if HumanQ:Ready() then HumanQ:Cast(Target) end 
 			if not isSpider and SkillR:Ready() then SkillR:Cast(Target) end 		
 		end 
 
-		if isSpider then 
-			if SpiderE:Ready() and ((GetDistance(Target) <= PluginMenu.EJump or DamageCalculation.CalculateRealDamage(true, Target) > Target.health) or PluginMenu.EJumpOverride) then
+		if isSpider and Target then 
+			if SpiderE:Ready() and ((GetDistance(Target) <= PluginMenu.EJump or DamageCalculation.CalculateRealDamage(Target) > Target.health) or PluginMenu.EJumpOverride) then
 				SpiderE:Cast(Target)
 			end 
 			if SpiderQ:Ready() then SpiderQ:Cast(Target) end 
-			if SpiderW:Ready() and (GetDistance(Target) <= 50 or DamageCalculation.CalculateRealDamage(true, Target) > Target.health) then
-				SpiderW:Cast(Target)
-			end
+			if SpiderW:Ready() then	SpiderW:Cast(Target) end
 
 			if GetDistance(Target) >= PluginMenu.rDistance and SkillR:Ready() then
 				SkillR:Cast(Target)

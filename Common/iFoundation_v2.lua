@@ -184,10 +184,10 @@ class 'Caster' -- {
 			CastSpell(self.spell)
 			return true
 		elseif self.spellType == SPELL_TARGETED then
-			if ValidTarget(target, self.range) or target ~= nil and not target.dead and GetDistance(target) < self.range and target.team == myHero.team then
+			if ValidTarget(target, self.range) then
 				CastSpell(self.spell, target)
 				return true
-			end 
+			end
 		elseif self.spellType == SPELL_TARGETED_FRIENDLY then
 			if target ~= nil and not target.dead and GetDistance(target) < self.range and target.team == myHero.team then
 				CastSpell(self.spell, target)
@@ -205,7 +205,9 @@ class 'Caster' -- {
 					CastSpell(self.spell, spellPos.x, spellPos.z)
 					return true
 				end
-			end
+			elseif target.team == myHero.team then
+				CastSpell(self.spell, target.x, target.z)
+			end 
 		elseif self.spellType == SPELL_LINEAR_COL then
 			if self.pred and ValidTarget(target) then
 				local spellPos,_ = self.pred:GetPrediction(target)
@@ -224,6 +226,32 @@ class 'Caster' -- {
 			end
 		end
 		return false
+	end
+
+	function Caster:CastMouse(spellPos, nearestTarget)
+		--assert(spellPos and spellPos.x and spellPos.z, "Error: iCaster:CastMouse(spellPos, nearestTarget), invalid spellPos.")
+		--assert(self.spellType ~= SPELL_TARGETED or (nearestTarget == nil or type(nearestTarget) == "boolean"), "Error: iCaster:CastMouse(spellPos, nearestTarget), <boolean> or nil expected for nearestTarget.")
+		if myHero:CanUseSpell(self.spell) ~= READY then return false end
+		if self.spellType == SPELL_SELF then
+			CastSpell(self.spell)
+			return true
+		elseif self.spellType == SPELL_TARGETED then
+			if nearestTarget ~= false then
+				local targetEnemy
+				for _, enemy in ipairs(GetEnemyHeroes()) do
+					if ValidTarget(targetEnemy, self.range) and (targetEnemy == nil or GetDistanceFromMouse(enemy) < GetDistanceFromMouse(targetEnemy)) then
+						targetEnemy = enemy
+					end
+				end
+				if targetEnemy then
+					CastSpell(self.spell, targetEnemy)
+					return true
+				end
+			end
+		elseif self.spellType == SPELL_LINEAR_COL or self.spellType == SPELL_LINEAR or self.spellType == SPELL_CIRCLE or self.spellType == SPELL_CONE then
+			CastSpell(self.spell, spellPos.x, spellPos.z)
+			return true
+		end
 	end
 
 	function Caster:Ready()
@@ -480,8 +508,15 @@ class 'AutoPotion' -- {
 		AddTickCallback(function(obj) self:OnTick() end)
 	end 
 
+	function AutoPotion:Fountain() 
+		if GetGame().map.index ~= 7 and GetGame().map.index ~= 12 then
+			return true
+		end 
+		return InFountain() 
+	end 
+
 	function AutoPotion:OnTick() 
-		if not self.Menu.usePotions or myHero.dead or InFountain() then return end 
+		if not self.Menu.usePotions or myHero.dead or self:Fountain() then return end 
 		for name,potion in pairs(PotionTable) do 
 			if potion.tick == 0 or (GetTickCount() - potion.tick > 1000) then 
 				potion.slot = GetInventorySlotItem(potion.itemID) 
@@ -556,7 +591,7 @@ class "Drawing" -- {
 	end 
 
 	function Drawing:DrawTarget(Target) 
-		if myHero.dead then return false end 
+		if myHero.dead or not myHero.valid then return false end 
 		local totalDamage = DamageCalculation.CalculateBurstDamage(Target)
 		local realDamage = DamageCalculation.CalculateRealDamage(Target) 
 		local tempColor = ColorARGB.Red 
@@ -844,7 +879,7 @@ class 'Heroes' -- {
         for i, tableType in pairs(self.tables) do
             if bit32.band(mode, i) == i then 
                 for k,v in pairs(tableType) do 
-                    if v ~= nil and v.valid and not v.dead and (v.team == myHero.team or v.bInvulnerable == 0) then 
+                    if v ~= nil and v.valid and not v.dead and (v.team == myHero.team or v.bInvulnerable == 0) and v ~= myHero then 
                         if v.visible and v.bTargetable and GetDistance(v, pFrom) <= range then table.insert(tempTable, v) end
                     end
                 end 
@@ -1204,6 +1239,7 @@ class 'AutoShield' -- {
 		--[[if self.spellType == "BAttack" or self.spellType == "CAttack" then
 			return true 
 		end--]]
+		if object == nil then return false end 
 		local hitchampion = false
 		if self.spellType == "Q" or self.spellType == "W" or self.spellType == "E" or self.spellType =="R" then
 			local shottype = skillData[object.charName][self.spellType]["type"]
@@ -1259,3 +1295,4 @@ class 'AutoBuff' -- {
 
 
 -- }
+

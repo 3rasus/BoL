@@ -29,7 +29,7 @@ function PluginOnTick()
 	if Target and MainMenu.AutoCarry then
 		if SkillR:Ready() and (DamageCalculation.CalculateRealDamage(Target) > Target.health or (getDmg("R", Target, myHero) * 3) > Target.health) then
 			if PluginMenu.castMouse then
-				SkillR:Cast(mousePos)
+				SkillR:CastMouse(mousePos)
 			else
 				SkillR:Cast(Target) 
 			end 
