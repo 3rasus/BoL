@@ -508,15 +508,8 @@ class 'AutoPotion' -- {
 		AddTickCallback(function(obj) self:OnTick() end)
 	end 
 
-	function AutoPotion:Fountain() 
-		if GetGame().map.index ~= 7 and GetGame().map.index ~= 12 then
-			return true
-		end 
-		return InFountain() 
-	end 
-
 	function AutoPotion:OnTick() 
-		if not self.Menu.usePotions or myHero.dead or self:Fountain() then return end 
+		if not self.Menu.usePotions or myHero.dead or ((GetGame().map.index ~= 7 and GetGame().map.index ~= 12) and InFountain()) then return end 
 		for name,potion in pairs(PotionTable) do 
 			if potion.tick == 0 or (GetTickCount() - potion.tick > 1000) then 
 				potion.slot = GetInventorySlotItem(potion.itemID) 
