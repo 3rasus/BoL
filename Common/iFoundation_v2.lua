@@ -731,6 +731,30 @@ class "Monitor" -- {
 
 		self.monitorTable = {}
 		AddTickCallback(function(obj) self:OnTick() end)
+
+		self.teleporting = false
+		AddCreateObjCallback(function(object) self:OnCreateObj(object) end)
+		AddDeleteObjCallback(function(object) self:OnDeleteObj(object) end)
+	end 
+
+	function Monitor.IsTeleporting() 
+		return Monitor.Instance():_IsTeleporting() 
+	end 
+
+	function Monitor:_IsTeleporting() 
+		return self.teleporting 
+	end 
+
+	function Monitor:OnCreateObj(object)
+		if object and (object.name == "TeleportHomeImproved.troy" or object.name == "TeleportHome.troy") then
+			self.teleporting = true
+		end 
+	end 
+
+	function Monitor:OnDeleteObj(object) 
+		if object and (object.name == "TeleportHomeImproved.troy" or object.name == "TeleportHome.troy") then
+			self.teleporting = false
+		end 
 	end 
 
 	function Monitor:OnTick() 
@@ -1027,8 +1051,14 @@ class 'Buffs' -- {
 -- }
 
 class 'Combat' -- {
-	
-	function Combat.KillSteal(Spell, range) 
+
+	function Combat.GetTrueRange()
+
+	    return myHero.range + GetDistance(myHero.minBBox)
+
+	end
+ 
+ 	function Combat.KillSteal(Spell, range) 
 		if not Spell:Ready() then return end 
 		for i, enemy in pairs(Heroes.GetObjects(ENEMY, range)) do 
 			if enemy and ValidTarget(enemy) and not enemy.dead then 
@@ -1289,3 +1319,93 @@ class 'AutoBuff' -- {
 
 -- }
 
+class 'ComboLibrary' -- {
+	
+	function ComboLibrary:__init()
+		self.casters = {}
+	end 
+
+	function ComboLibrary:AddCasters(table) 
+		for _, v in pairs(table) do 
+			self:AddCaster(v)
+		end 
+	end 
+
+	function ComboLibrary:AddCaster(caster)
+		table.insert(self.casters, {spellVar = caster.spell, casterInstance = caster, damage = 0, customCast = nil, mana = 0})
+	end 
+
+	function ComboLibrary:AddCustomCast(spellVar, funct)
+		for k, v in pairs(self.casters) do 
+			if v.spellVar == spellVar then
+				self.casters[k].customCast = funct
+				break 
+			end 
+		end 
+	end 
+
+	function ComboLibrary:CheckMana(currentCombo) 
+		local totalCost = 0
+		for v, caster in pairs(currentCombo) do 
+			totalCost = totalCost + myHero:GetSpellData(caster.spellVar).mana 
+		end 
+		return totalCost <= myHero.mana 
+	end 
+
+	function ComboLibrary:UpdateDamages(target) 
+		for k, caster in pairs(self.casters) do 
+			self.casters[k].damage = getDmg(SpellToString(caster.spellVar), target, myHero)
+			self.casters[k].mana = myHero:GetSpellData(caster.spellVar).mana 
+		end 
+	end
+
+	function ComboLibrary:Sort() 
+		table.sort(self.casters, function(a,b) 
+			if a.damage == b.damage then 
+				return a.mana < b.mana 
+			end 
+			return a.damage > b.damage
+		 end)
+	end 
+
+	function ComboLibrary:GetCombo(target, asCaster) 
+		local damage = 0
+		local currentCombo = {}
+		self:UpdateDamages(target)
+		self:Sort()
+		damage = damage + getDmg("AD", target, myHero)
+		for k, v in pairs(self.casters) do 
+			if damage >= target.health then
+				break 
+			end 
+			if v.casterInstance:Ready() then
+				damage = damage + v.damage 
+				table.insert(currentCombo, v)
+			end 
+		end 
+		if self:CheckMana(currentCombo) and asCaster then
+			return self:ToCasters(currentCombo)
+		end
+		return currentCombo
+	end 
+
+	function ComboLibrary:ToCasters(combo) 
+		local localCasters = {}
+		for k, v in pairs(combo) do 
+			table.insert(localCasters, v.casterInstance)
+		end 
+		return localCasters
+	end 
+
+	function ComboLibrary:CastCombo(target) 
+		if target == nil or target.dead then return false end 
+		local combo = self:GetCombo(target, false) 
+		for k, caster in pairs(combo) do 
+			if not target or target.dead then return true end 
+			if caster.casterInstance:Ready() and (caster.customCast == nil or caster.customCast(target)) then
+				caster.casterInstance:Cast(target)
+			end 
+		end 
+	end 
+
+-- }

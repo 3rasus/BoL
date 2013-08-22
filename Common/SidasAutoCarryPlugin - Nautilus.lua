@@ -32,7 +32,7 @@ function PluginOnTick()
 	Target = AutoCarry.GetAttackTarget()
 
 	if Target and MainMenu.AutoCarry then
-		if SkillQ:Ready() then SkillQ:Cast(Target) end 
+		if SkillQ:Ready() and GetDistance(Target) > Combat.GetTrueRange() then SkillQ:Cast(Target) end 
 		if SkillE:Ready() and ValidTarget(Target, SkillE.range) then SkillE:Cast(Target) end 
 		if SkillW:Ready() and ValidTarget(Target, SkillW.range) then SkillW:Cast(Target) end 	
 		if SkillR:Ready() and (DamageCalculation.CalculateRealDamage(Target) > Target.health or getDmg("R", Target, myHero) > Target.health) then SkillR:Cast(Target) end 	

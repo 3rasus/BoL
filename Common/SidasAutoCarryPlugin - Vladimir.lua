@@ -30,13 +30,14 @@ function PluginOnLoad()
 	PluginMenu = AutoCarry.PluginMenu
 	PluginMenu:addParam("sep1", "-- Spell Cast Options --", SCRIPT_PARAM_INFO, "")
 	PluginMenu:addParam("eStack", "Stack E", SCRIPT_PARAM_ONOFF, true)
+	PluginMenu:addParam("rAmount", "Amount of people to use R on",SCRIPT_PARAM_SLICE, 3, 0, 5, 0)
 	AutoShield.Instance(SkillW.range, SkillW)
 end
 
 function PluginOnTick()
 	Target = AutoCarry.GetAttackTarget()
 
-	if SkillE:Ready() and PluginMenu.eStack and GetTickCount() - eTick >= 9500 then
+	if SkillE:Ready() and not Monitor.IsTeleporting() and PluginMenu.eStack and GetTickCount() - eTick >= 9500 then
 		eTick = GetTickCount()
 		SkillE:Cast(Target)
 	end 
@@ -44,6 +45,18 @@ function PluginOnTick()
 	if Target and MainMenu.AutoCarry then
 		if SkillQ:Ready() then SkillQ:Cast(Target) end 
 		if SkillE:Ready() then SkillE:Cast(Target) end 
-		if SkillR:Ready() and ((DamageCalculation.CalculateRealDamage(Target) > Target.health) or (getDmg("R", Target, myHero) > Target.health))  then SkillR:Cast(Target) end 	
-	end
+		if SkillR:Ready() then
+			if ((DamageCalculation.CalculateRealDamage(Target) > Target.health) or (getDmg("R", Target, myHero) > Target.health)) then 
+				SkillR:Cast(Target) 
+			elseif Monitor.CountEnemies(Target, SkillR.width) >= PluginMenu.rAmount then
+				SkilLR:Cast(Target) 
+			end 
+		end 
+	end 
+
+	if MainMenu.LastHit or MainMenu.LaneClear then 
+		if not Target then
+			Combat.LastHit(SkillQ, SkillQ.range)
+		end 
+	end 
 end
