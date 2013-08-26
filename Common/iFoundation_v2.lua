@@ -768,7 +768,7 @@ class "Monitor" -- {
 	end 
 
 	function Monitor:_GetLowAlly()	
-		for i, target in pairs(Heroes.GetObjects(ALLY, math.huge)) do 
+		for i, target in pairs(_Heroes.GetObjects(ALLY, math.huge)) do 
 			if target.health / target.maxHealth <= (self.Menu.allyPercentage / 100) then 
 				return target 
 			end 
@@ -782,7 +782,7 @@ class "Monitor" -- {
 	function Monitor:_GetAllyWithMostEnemies(range)
 		local best = nil
 		local enemies = math.huge
-		for i, target in pairs(Heroes.GetObjects(ALLY, range)) do
+		for i, target in pairs(_Heroes.GetObjects(ALLY, range)) do
 			if target and not target.dead then
 				if best == nil then
 					best = target 
@@ -802,7 +802,7 @@ class "Monitor" -- {
 
 	function Monitor:_CountEnemies(point, range) 
 		local count = 0
-		for i, target in pairs(Heroes.GetObjects(ENEMY, range)) do 
+		for i, target in pairs(_Heroes.GetObjects(ENEMY, range)) do 
 			if target and not target.dead and ValidTarget(target, range) then
 				count = count + 1
 			end 
@@ -818,17 +818,17 @@ class "Monitor" -- {
 
 -- }
 
-class 'Heroes' -- {
+class '_Heroes' -- {
     
-    Heroes.tables = {
+    _Heroes.tables = {
         [ALLY] = {},
         [ENEMY] = {},
         [NEUTRAL] = {}
     }
 
-    Heroes.instance = ""
+    _Heroes.instance = ""
 
-    function Heroes:__init()
+    function _Heroes:__init()
         self.modeCount = 3
 
         for i = 1, heroManager.iCount do
@@ -837,31 +837,31 @@ class 'Heroes' -- {
         end
     end
 
-    function Heroes.Instance()
-        if Heroes.instance == "" then Heroes.instance = Heroes() end return Heroes.instance 
+    function _Heroes.Instance()
+        if _Heroes.instance == "" then _Heroes.instance = _Heroes() end return _Heroes.instance 
     end
 
-    function Heroes.GetObjects(mode, range, pFrom)
-        return Heroes.Instance():GetObjectsFromTable(mode, range, pFrom)
+    function _Heroes.GetObjects(mode, range, pFrom)
+        return _Heroes.Instance():GetObjectsFromTable(mode, range, pFrom)
     end
 
-    function Heroes.GetAllObjects(mode)
-        return Heroes.Instance():GetAllObjectsFromTable(mode)
+    function _Heroes.GetAllObjects(mode)
+        return _Heroes.Instance():GetAllObjectsFromTable(mode)
     end
 
-    function Heroes:AddObject(obj)
+    function _Heroes:AddObject(obj)
         DelayAction(function(obj)
-                if obj.team == myHero.team then table.insert(Heroes.tables[ALLY], obj) return end
-                if obj.team == TEAM_ENEMY then table.insert(Heroes.tables[ENEMY], obj) return end
-                if obj.team == TEAM_NEUTRAL then table.insert(Heroes.tables[NEUTRAL], obj) return end
+                if obj.team == myHero.team then table.insert(_Heroes.tables[ALLY], obj) return end
+                if obj.team == TEAM_ENEMY then table.insert(_Heroes.tables[ENEMY], obj) return end
+                if obj.team == TEAM_NEUTRAL then table.insert(_Heroes.tables[NEUTRAL], obj) return end
             end, 0, {obj})
     end 
 
-    function Heroes.GetObjectByNetworkId(networkID)
-         return Heroes.Instance():PrivateGetObjectByNetworkId(networkID)
+    function _Heroes.GetObjectByNetworkId(networkID)
+         return _Heroes.Instance():PrivateGetObjectByNetworkId(networkID)
     end
 
-    function Heroes:PrivateGetObjectByNetworkId(networkID)
+    function _Heroes:PrivateGetObjectByNetworkId(networkID)
         for i, tableType in pairs(self.tables) do
             for k,v in pairs(tableType) do 
                 if v.networkID == networkID then return v end 
@@ -870,7 +870,7 @@ class 'Heroes' -- {
         return nil
     end 
 
-    function Heroes:GetAllObjectsFromTable(mode)
+    function _Heroes:GetAllObjectsFromTable(mode)
         if mode > self.modeCount then mode = self.modeCount end 
 
         tempTable = {}
@@ -887,7 +887,7 @@ class 'Heroes' -- {
         return tempTable
     end 
 
-    function Heroes:GetObjectsFromTable(mode, range, pFrom)
+    function _Heroes:GetObjectsFromTable(mode, range, pFrom)
         if mode > self.modeCount then mode = self.modeCount end 
         if range == nil or range < 0 then range = math.huge end
         if pFrom == nil then pFrom = myHero end
@@ -906,8 +906,8 @@ class 'Heroes' -- {
     end
 -- }
 
-class 'Buff' -- {
-    function Buff:__init(buffId, stack, starttime, time)
+class '_Buff' -- {
+    function _Buff:__init(buffId, stack, starttime, time)
         self.buffId = buffId 
         self.count = stack or 0
         self.starttime = starttime - (GetLatency()/(1000*2))
@@ -915,54 +915,54 @@ class 'Buff' -- {
         self.time = time
     end
 
-    function Buff:SetStacks(stack)
+    function _Buff:SetStacks(stack)
         self.count = stack
     end 
 
-    function Buff:GetStacks()
+    function _Buff:GetStacks()
         return self.count
     end 
 
-    function Buff:SetTime(time)
+    function _Buff:SetTime(time)
         self.starttime = GetGameTimer()
         self.endtime = self.starttime + time
         self.time = time
     end 
 -- }
 
-class 'Buffs' -- {
+class '_Buffs' -- {
     buffs = {}
-    Buffs.instance = ""
+    _Buffs.instance = ""
 
-    function Buffs:__init()
-        local heroes = Heroes.GetAllObjects(ALL) 
+    function _Buffs:__init()
+        local heroes = _Heroes.GetAllObjects(ALL) 
 
         for j, hero in pairs(heroes) do
             for i=0, hero.buffCount, 1 do
                 local buff = hero:getBuff(i)
                 if buff.valid then 
                     if type(buffs[hero.networkID]) ~= "table" then buffs[hero.networkID] = {} end 
-                    buffs[hero.networkID][i] = Buff(nil , 1, buff.startT, buff.endT-buff.startT)
+                    buffs[hero.networkID][i] = _Buff(nil , 1, buff.startT, buff.endT-buff.startT)
                 end
             end 
         end 
         AddRecvPacketCallback(function(obj) self:OnRecvPacket(obj) end)
     end
 
-    function Buffs.Instance()
-        if Buffs.instance == "" then Buffs.instance = Buffs() end return Buffs.instance 
+    function _Buffs.Instance()
+        if _Buffs.instance == "" then _Buffs.instance = _Buffs() end return _Buffs.instance 
     end
 
-    function Buffs.HaveBuff(id, target)
-        return Buffs.Instance():PHaveBuff(id, target)
+    function _Buffs.HaveBuff(id, target)
+        return _Buffs.Instance():PHaveBuff(id, target)
     end
 
-    function Buffs:GetBuffs(target)
+    function _Buffs:GetBuffs(target)
         if type(buffs[target.networkID]) ~= "table" then buffs[target.networkID] = {} end 
         return buffs[target.networkID]
     end 
 
-    function Buffs:PHaveBuff(id, target)
+    function _Buffs:PHaveBuff(id, target)
         if type(buffs[target.networkID]) ~= "table" then buffs[target.networkID] = {} end 
         for j, buff in pairs(buffs[target.networkID]) do
             if buff.buffId == id then 
@@ -972,11 +972,11 @@ class 'Buffs' -- {
         return nil
     end
 
-    function Buffs.TargetHaveBuff(name, target) 
-    	return Buffs.Instance():_TargetHaveBuff(name, target) 
+    function _Buffs.TargetHaveBuff(name, target) 
+    	return _Buffs.Instance():_TargetHaveBuff(name, target) 
     end 
 
-    function Buffs:_TargetHaveBuff(name, target)
+    function _Buffs:_TargetHaveBuff(name, target)
         if type(buffs[target.networkID]) ~= "table" then buffs[target.networkID] = {} return false end 
         for i = 1, target.buffCount do
             local tBuff = target:getBuff(i)
@@ -987,7 +987,7 @@ class 'Buffs' -- {
         return nil
     end 
 
-    function Buffs:OnRecvPacket(p)
+    function _Buffs:OnRecvPacket(p)
         if p.header == 183 then 
             p.pos = 1 
             local networkID = p:DecodeF()
@@ -1003,7 +1003,7 @@ class 'Buffs' -- {
             if FromBuff ~= myHero.networkID then return end
 
             if type(buffs[networkID]) ~= "table" then buffs[networkID] = {} end 
-            buffs[networkID][buffslot+1] = Buff(buffID, stackcount, GetGameTimer() ,time)
+            buffs[networkID][buffslot+1] = _Buff(buffID, stackcount, GetGameTimer() ,time)
 
             if (buffID == 226643749 or buffID == 39961747) and FromBuff == myHero.networkID then 
                 qTarget = objManager:GetObjectByNetworkId(networkID)
@@ -1022,7 +1022,7 @@ class 'Buffs' -- {
             local stack = p:Decode1()
             local time = p:DecodeF()
             if buff == nil then 
-                buffs[networkID][buffslot+1] = Buff(nil, stack, GetGameTimer() ,time)
+                buffs[networkID][buffslot+1] = _Buff(nil, stack, GetGameTimer() ,time)
             else 
                 buff:SetStacks(stack)
                 buff:SetTime(time)
@@ -1060,7 +1060,7 @@ class 'Combat' -- {
  
  	function Combat.KillSteal(Spell, range) 
 		if not Spell:Ready() then return end 
-		for i, enemy in pairs(Heroes.GetObjects(ENEMY, range)) do 
+		for i, enemy in pairs(_Heroes.GetObjects(ENEMY, range)) do 
 			if enemy and ValidTarget(enemy) and not enemy.dead then 
 				if enemy.health <= getDmg(SpellToString(Spell.spell), enemy, myHero) then
 					Spell:Cast(enemy) 
@@ -1081,7 +1081,7 @@ class 'Combat' -- {
 
 	function Combat.CastLowest(Spell, percentage) 
 		if not Spell:Ready() then return end 
-		for _, player in pairs(Heroes.GetObjects(ALLY, Spell.range)) do 
+		for _, player in pairs(_Heroes.GetObjects(ALLY, Spell.range)) do 
 			if player and not player.dead and GetDistance(player) < Spell.range and player.health <= player.maxHealth * (percentage / 100) then
 				Spell:Cast(player)
 			end 
@@ -1202,7 +1202,7 @@ class 'AutoShield' -- {
 				end 
 			end 
 			if (self.ShieldSpell.spellType ~= SPELL_SELF or AutoCarry.selfOverride) and self.Menu.allyShield then
-				for i, player in pairs(Heroes.GetObjects(ALLY, self.range)) do 
+				for i, player in pairs(_Heroes.GetObjects(ALLY, self.range)) do 
 					if not player.dead and self:SpellWillHit(object, spell, player) then 
 						local damagePercent = self:GetSpellDamage(object, spell, player) * 100 / player.health
 						if damagePercent > self.Menu.allyPercentage then 
@@ -1302,7 +1302,7 @@ class 'AutoBuff' -- {
 		if object and spellProc and object.team == myHero.team and spellProc.name:find("Attack") and not myHero.dead and not (object.name:find("Minion_") or object.name:find("Odin")) and GetDistance(object) <= self.BuffSpell.range then
 
 			if not self.BuffSpell.spellType == SPELL_SELF then
-				for i, player in pairs(Heroes.GetObjects(ENEMY, math.huge)) do 
+				for i, player in pairs(_Heroes.GetObjects(ENEMY, math.huge)) do 
 					if not player.dead and GetDistance(player, spellProc.endPos) < 80 then
 						Message.AddMessage("AutoBuff: Buffed player", ColorARGB.Green)
 						self.BuffSpell:Cast(object) 
@@ -1323,6 +1323,7 @@ class 'ComboLibrary' -- {
 	
 	function ComboLibrary:__init()
 		self.casters = {}
+		self.Menu = scriptConfig("iFoundation: Combo", "icombo")
 	end 
 
 	function ComboLibrary:AddCasters(table) 
@@ -1332,10 +1333,21 @@ class 'ComboLibrary' -- {
 	end 
 
 	function ComboLibrary:AddCaster(caster)
-		table.insert(self.casters, {spellVar = caster.spell, casterInstance = caster, damage = 0, customCast = nil, mana = 0})
+		local tempSpell = SpellToString(caster.spell)
+		self.Menu:addParam("use" .. tempSpell, "Use " .. tempSpell .. " in combo", SCRIPT_PARAM_ONOFF, true)
+		table.insert(self.casters, {spellVar = caster.spell, casterInstance = caster, damage = 0, customCastCondition = nil, mana = 0, customCast = nil})
 	end 
 
 	function ComboLibrary:AddCustomCast(spellVar, funct)
+		for k, v in pairs(self.casters) do 
+			if v.spellVar == spellVar then
+				self.casters[k].customCastCondition = funct
+				break 
+			end 
+		end 
+	end 
+
+	function ComboLibrary:AddCast(spellVar, funct) 
 		for k, v in pairs(self.casters) do 
 			if v.spellVar == spellVar then
 				self.casters[k].customCast = funct
@@ -1402,8 +1414,94 @@ class 'ComboLibrary' -- {
 		local combo = self:GetCombo(target, false) 
 		for k, caster in pairs(combo) do 
 			if not target or target.dead then return true end 
-			if caster.casterInstance:Ready() and (caster.customCast == nil or caster.customCast(target)) then
-				caster.casterInstance:Cast(target)
+			if self.Menu["use" .. SpellToString(caster.spellVar)] then
+				if caster.casterInstance:Ready() and (caster.customCastCondition == nil or caster.customCastCondition(target)) then
+					if caster.customCast ~= nil then
+						caster.customCast(target) 
+					else 
+						caster.casterInstance:Cast(target)
+					end 
+				end 
+			end 
+		end 
+	end 
+
+	function ComboLibrary.KillableCast(Target, spellName) 
+		return ((DamageCalculation.CalculateRealDamage(Target) > Target.health) or (getDmg(spellName, Target, myHero) > Target.health))
+	end 
+
+-- }
+
+class 'BuffManager' -- {
+	
+	BuffManager.instance = ""
+
+	function BuffManager.Instance() 
+		if BuffManager.instance == "" then BuffManager.instance = BuffManager() end return BuffManager.instance 
+	end 
+
+	function BuffManager:__init()
+		self.enemies = {}
+		AdvancedCallback:bind('OnGainBuff', function(unit, buff) self:OnGainBuff(unit, buff) end)
+		AdvancedCallback:bind('OnLoseBuff', function(unit, buff) self:OnLoseBuff(unit, buff) end)
+		AdvancedCallback:bind('OnChangeStack', function(unit, buff) self:OnChangeStack(unit, buff) end)
+		for i=0, heroManager.iCount, 1 do
+	        local player = heroManager:GetHero(i)
+	        if player and player.team ~= myHero.team then
+	        	self.enemies[player.name] = {}
+	        end 
+		end
+	end 
+
+	function BuffManager.TargetHaveBuff(target, buffName, stacks)
+		return BuffManager.Instance():_TargetHaveBuff(target, buffName, stacks) 
+	end 
+
+	function BuffManager:_TargetHaveBuff(target, buffName, stacks)
+		self.stacks = stacks or 0
+		if self.enemies[target.name] ~= nil then
+			for _, buff in pairs(self.enemies[target.name]) do 
+				if buff.name == buffName and buff.stack >= self.stacks then
+					return true
+				end  
+			end 
+		end 
+	end 
+
+	function BuffManager:OnGainBuff(unit, buff) 
+		if unit == nil or buff == nil then return end 
+		if unit.team ~= myHero.team then 
+			if self.enemies[unit.name] ~= nil then
+				table.insert(self.enemies[unit.name], buff)
+			end 
+		end 
+	end 
+
+	function BuffManager:OnLoseBuff(unit, buff) 
+		if unit == nil or buff == nil then return end 
+		if unit.team ~= myHero.team then 
+			if self.enemies[unit.name] ~= nil then 
+				for i=0, #self.enemies[unit.name], 1 do 
+					if self.enemies[unit.name][i] == buff then
+						table.remove(self.enemies[unit.name], i)
+						break 
+					end 
+				end 
+			end 
+		end 
+	end 
+
+	function BuffManager:OnChangeStack(unit, buff) 
+		if unit == nil or buff == nil then return end 
+		if unit.team ~= myHero.team then 
+			if self.enemies[unit.name] ~= nil then 
+				for i=0, #self.enemies[unit.name], 1 do 
+					if self.enemies[unit.name][i] == buff then
+						table.remove(self.enemies[unit.name], i)
+						break 
+					end 
+				end 
+				table.insert(self.enemies[unit.name], buff)
 			end 
 		end 
 	end 
